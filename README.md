@@ -6,16 +6,22 @@ Voorbeeldimplementatie van software die werkt op basis van NEN 2660-2:2022
 
 For querying IMBOR we use the following resources:
 
-- ..
-- ..
+- https://hub.laces.tech/crow/imbor/2022/p/vocabulaire
+- https://hub.laces.tech/crow/imbor/2022/p/kern
+- https://hub.laces.tech/crow/imbor/2022/p/domeinwaarden
+- https://hub.laces.tech/crow/imbor/2022/p/informatief
+- https://hub.laces.tech/crow/imbor/2022/p/aanvullend-metamodel
 
 Read the docs on how to authenticate and query for the Laces Hub: https://docs.laces.tech/hub/9.0.8/security.html#authentication
 
-____
-
-# Getting Started with Create React App
+# Running this app
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+## Prerequisites
+
+- Duplicate `.env.example` to `.env`
+- Configure the `REACT_APP_IMBOR_TOKEN` variable
 
 ## Available Scripts
 
