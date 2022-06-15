@@ -12,7 +12,7 @@ function App() {
 
   // Function that runs if component loads
   useEffect(() => {
-    getVocabulaire('SELECT%20?s%20?p%20?o%20WHERE%20%7B%20?s%20?p%20?o%20.%20%7D%20LIMIT%2010');
+    // getVocabulaire('SELECT%20?s%20?p%20?o%20WHERE%20%7B%20?s%20?p%20?o%20.%20%7D%20LIMIT%2010');
   }, [])
 
   return (
