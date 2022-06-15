@@ -21,6 +21,7 @@ const Map = () => {
       center: [5.108336,52.092857], // starting position [lng, lat]
       zoom: 18 // starting zoom
     });
+
   }, [map])
 
   return (

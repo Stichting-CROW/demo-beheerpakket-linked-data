@@ -13,8 +13,8 @@ const doRequest = async (url: string) => {
   return responseJson;
 }
 
-// getVocabulaire :: string -> json
-export const getVocabulaire = async (query: string) => {
-  const url = config.imbor.vocabulaire;
+// getKern :: string -> json
+export const getKern = async (query: string) => {
+  const url = config.imbor.kern;
   return await doRequest(`${url}?query=${query}`);
 }
