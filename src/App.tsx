@@ -1,24 +1,23 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {useEffect} from 'react';
+
+// Import helper functions
+import {getVocabulaire} from './api/imbor'
+
+// Import components
+import Map from './components/Map';
+
 import './App.css';
 
 function App() {
+
+  // Function that runs if component loads
+  useEffect(() => {
+    getVocabulaire('SELECT%20?s%20?p%20?o%20WHERE%20%7B%20?s%20?p%20?o%20.%20%7D%20LIMIT%2010');
+  }, [])
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Map />
     </div>
   );
 }

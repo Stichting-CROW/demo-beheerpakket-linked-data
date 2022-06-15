@@ -1,3 +1,18 @@
+# demo-beheerpakket-linked-data
+
+Voorbeeldimplementatie van software die werkt op basis van NEN 2660-2:2022
+
+# IMBOR resources
+
+For querying IMBOR we use the following resources:
+
+- ..
+- ..
+
+Read the docs on how to authenticate and query for the Laces Hub: https://docs.laces.tech/hub/9.0.8/security.html#authentication
+
+____
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
