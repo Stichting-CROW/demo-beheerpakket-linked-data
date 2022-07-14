@@ -9,9 +9,9 @@ SELECT ?classURI ?label WHERE {
     ?classURI rdf:type rdfs:Class ;
         # ... die niet abstract zijn
         dash:abstract false ;
-        # ... die subklasse van Fyisiek Object (NEN 2660) zijn, 
+        # ... die subklasse van Fysiek Object (NEN 2660) zijn, 
         # of een subklasse van een subklasse
         rdfs:subClassOf* nen2660:PhysicalObject ;
         # en selecteer het label
         skos:prefLabel ?label .
-}
+ }

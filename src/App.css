@@ -4,14 +4,3 @@ html, body, #root, .App {
   height: 100%;
   overflow: hidden;
 }
-
-.InfoBox {
-  background: #fff;
-  position: absolute;
-  padding: 1rem;
-  left: 1rem;
-  top: 3rem;
-  max-width: 1000px;
-  max-height: 500px;
-  overflow: auto;
-}
