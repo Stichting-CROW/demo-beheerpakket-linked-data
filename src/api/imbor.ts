@@ -31,8 +31,10 @@ export const getFysicalObjects = async (): Promise<any> => {
     SELECT ?classURI ?label ?subClassOf WHERE {
       ?classURI rdf:type rdfs:Class ;
       dash:abstract false ;
-      rdfs:subClassOf* nen2660:PhysicalObject;
+      rdfs:subClassOf* reeelOfRuimtelijk;
       skos:prefLabel ?label .
+
+      FILTER ( ?reeelOfRuimtelijk IN ( nen2660:RealObject , nen2660:FunctionalSpace ) )
     }
     ORDER BY STR(?label)
    `
