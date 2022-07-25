@@ -23,6 +23,10 @@ Read the docs on how to authenticate and query for the Laces Hub: https://docs.l
 
 ## Available Scripts
 
+### `npm install`
+
+Installs all dependencies.
+
 ### `npm start`
 
 Runs the app in the development mode.\
@@ -46,12 +50,6 @@ Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-## Libraries used
-
-In this demo app we use the following libraries:
-
-- https://github.com/andrelandgraf/react-datalist-input
-
 ## Learn More
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
@@ -59,3 +57,13 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
+
+# Libraries
+
+In this demo app we use the following libraries:
+
+- https://github.com/andrelandgraf/react-datalist-input
+
+Potential interesting libraries:
+
+- https://comunica.dev/docs/query/getting_started/query_app/
