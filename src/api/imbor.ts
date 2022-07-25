@@ -31,8 +31,9 @@ export const getFysicalObjects = async (): Promise<any> => {
     SELECT ?classURI ?label ?subClassOf WHERE {
       ?classURI rdf:type rdfs:Class ;
       dash:abstract false ;
-      rdfs:subClassOf* nen2660:PhysicalObject;
+      rdfs:subClassOf* ?reeelOfRuimtelijk;
       skos:prefLabel ?label .
+      FILTER ( ?reeelOfRuimtelijk IN ( nen2660:RealObject , nen2660:FunctionalSpace ) )
     }
     ORDER BY STR(?label)
    `
@@ -56,12 +57,11 @@ export const getAttributesForClass = async (classUri: string): Promise<any> => {
     PREFIX dash: <http://datashapes.org/dash#>
     PREFIX sh: <http://www.w3.org/ns/shacl#>
 
+    # https://github.com/Stichting-CROW/ldp-queries/blob/main/src/public/IMBOR2022_Attributen_per_Klasse.rq#L38
     select ?attributeURI ?attributeLabel ?attributeDefinition WHERE {
-        <${classUri}> rdf:type rdfs:Class ;
-        dash:abstract false ;
-        rdfs:subClassOf* nen2660:PhysicalObject .
+        <${classUri}> rdfs:subClassOf* ?uriSupertype .# Inspired by https://github.com/Stichting-CROW/ldp-queries/blob/main/src/public/IMBOR2022_Attributen_per_Klasse.rq#L29=
 
-        <${classUri}> sh:property/sh:path ?attributeURI .
+        ?uriSupertype sh:property/sh:path ?attributeURI .
 
         OPTIONAL { ?attributeURI skos:prefLabel ?attributeLabel . }
         OPTIONAL { ?attributeURI skos:definition ?attributeDefinition . }
