@@ -11,6 +11,10 @@ import {
   getFysicalObjects,
   getAttributesForClass
 } from '../api/imbor'
+import {
+  makeTriple,
+  makeBindingsObject
+} from '../helpers/triples.js';
 
 import './MapTools.css'
 
@@ -21,38 +25,56 @@ interface ImborResponse {
   }
 }
 
-const getLabel = (object: any) => object.label.value;
-const getUri = (object: any) => object.classURI.value;
+const Attributes = ({data}) => {
+  if(! data || data.length <= 0) return <></>;
+
+  return (
+    <div data-name="attributes">
+      {data.map(triple => {
+        console.log('attributeURI', triple.get('attributeURI'))
+        // Check if attributeLabel exists
+        if(! triple.get('attributeLabel')) return;
+        // Define ID
+        const id = `js-attributeLabel-${triple.get('attributeLabel')}`;
+        return <div
+          key={id}
+          data-name="attribute"
+          title={triple.get('attributeDefinition')}
+        >
+          <label htmlFor={id}>
+            {triple.get('attributeLabel')}
+          </label>
+          <input
+            id={id}
+            type="text"
+            name={triple.get('attributeLabel')}
+          />
+        </div>
+      })}
+    </div>
+  )
+}
 
 const EditObject = () => {
   // Define state variables
   const [isFormVisible, setIsFormVisible] = useState(true);
-  const [fysicalObjectsArray, setFysicalObjectsArray] = useState([]);
-  const [attributesArray, setAttributesArray] = useState([]);
+  const [fysicalObjects, setFysicalObjects] = useState([]);
+  const [attributes, setAttributes] = useState([]);
   const [selectedObjectType, setSelectedObjectType] = useState<string>('');
 
+  // Fetch fysical objects
   const fetchFysicalObjects = async () => {
     const response = await getFysicalObjects()
-
-    let objects: any = [];
-    Object.keys(response.results.bindings).forEach((key) => {
-      const obj = response.results.bindings[key];
-      const label = getLabel(obj);
-      const uri = getUri(obj);
-      objects.push({
-        id: label,
-        value: label,
-        label: uri
-      })
-    })
-    console.log('response', response)
-    setFysicalObjectsArray(objects);
+    const bindings = makeBindingsObject(response);
+    setFysicalObjects(bindings);
   }
 
+  // Fetch attributes for a specific FysicalObject class
   const fetchAttributesForClass = async (classUri: string) => {
     if(! classUri) return;
-    const attributes = await getAttributesForClass(classUri);
-    console.log(attributes)
+    const response = await getAttributesForClass(classUri);
+    const bindings = makeBindingsObject(response);
+    setAttributes(bindings);
   }
 
   // Function that runs if component loads
@@ -67,12 +89,25 @@ const EditObject = () => {
     fetchAttributesForClass(selectedObjectType);
   }, [selectedObjectType])
 
-  if(! fysicalObjectsArray || fysicalObjectsArray.length <= 0) {
+  if(! fysicalObjects || fysicalObjects.length <= 0) {
     return (
       <div className="EditObject">
         Bezig met laden van objecttypen...
       </div>
     )
+  }
+
+  // Function that prepares data to be used for DatalistInput
+  const prepareForDataList = (objects) => {
+    let ret: any = [];
+    for(let x in objects) {
+      ret.push({
+        id: objects[x].get('label'),
+        value: objects[x].get('label'),
+        label: objects[x].get('classURI')
+      });
+    }
+    return ret;
   }
 
   return (
@@ -81,13 +116,12 @@ const EditObject = () => {
         placeholder="Objecttype"
         label="Selecteer een objecttype"
         onSelect={(item) => {
-          console.log('item', item)
           setSelectedObjectType(item.label || '')
         }}
-        items={fysicalObjectsArray}
+        items={prepareForDataList(fysicalObjects)}
       />
       {selectedObjectType && <div style={{margin: '15px 0'}}>
-        Hier verschijnen de in te vullen attributen.
+        <Attributes data={attributes} />
         <div style={{margin: '15px 0'}}>
           <Button>
             Opslaan
