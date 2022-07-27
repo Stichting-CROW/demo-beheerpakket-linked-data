@@ -2,7 +2,7 @@ import {useState, useEffect, useRef} from 'react';
 import Button from './Button';
 
 // Import helper functions
-import EditObject from './EditObject'
+import EditObject from './EditObject/EditObject'
 
 import './MapTools.css'
 

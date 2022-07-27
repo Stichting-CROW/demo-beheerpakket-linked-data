@@ -1,22 +1,30 @@
 import {useState, useEffect, useRef} from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import DatalistInput from 'react-datalist-input';
 import 'react-datalist-input/dist/styles.css';
 
 // Import components
-import Button from './Button';
+import Button from '../Button';
+import FormLabel from '../FormLabel/FormLabel.jsx';
+import FormInput from '../FormInput/FormInput.jsx';
 
 // Import helper functions
 import {
   getKern,
   getFysicalObjects,
   getAttributesForClass
-} from '../api/imbor'
+} from '../../api/imbor'
 import {
   makeTriple,
-  makeBindingsObject
-} from '../helpers/triples.js';
+  makeTriplesObject,
+  getUniquePhysicalObjects
+} from '../../helpers/triples.js';
+import {
+  selectPhysicalObjects,
+  setPhysicalObjects
+} from './editObjectSlice';
 
-import './MapTools.css'
+import '../MapTools.css'
 
 interface ImborResponse {
   head: object,
@@ -31,50 +39,53 @@ const Attributes = ({data}) => {
   return (
     <div data-name="attributes">
       {data.map(triple => {
-        console.log('attributeURI', triple.get('attributeURI'))
         // Check if attributeLabel exists
-        if(! triple.get('attributeLabel')) return;
+        if(! triple['entry_text'].value) return;
         // Define ID
-        const id = `js-attributeLabel-${triple.get('attributeLabel')}`;
+        const id = `js-attributeLabel-${triple['entry_text'].value}`;
         return <div
           key={id}
           data-name="attribute"
-          title={triple.get('attributeDefinition')}
+          title={triple['entry_definition'] ? triple['entry_definition'].value : ''}
         >
-          <label htmlFor={id}>
-            {triple.get('attributeLabel')}
-          </label>
-          <input
-            id={id}
-            type="text"
-            name={triple.get('attributeLabel')}
-          />
+          <FormLabel id={id} title={triple['entry_text'].value}>
+            <FormInput
+              id={id}
+              type="text"
+              name={triple['entry_text'].value}
+            />
+          </FormLabel>
         </div>
       })}
     </div>
   )
 }
 
+const selectedObjectTypeLocation = true;
+
 const EditObject = () => {
   // Define state variables
   const [isFormVisible, setIsFormVisible] = useState(true);
-  const [fysicalObjects, setFysicalObjects] = useState([]);
   const [attributes, setAttributes] = useState([]);
   const [selectedObjectType, setSelectedObjectType] = useState<string>('');
+
+  // Get store variables
+  const physicalObjects = useSelector(selectPhysicalObjects);
+  const dispatch = useDispatch();
 
   // Fetch fysical objects
   const fetchFysicalObjects = async () => {
     const response = await getFysicalObjects()
-    const bindings = makeBindingsObject(response);
-    setFysicalObjects(bindings);
+    const uniqueTriples = getUniquePhysicalObjects(response.results.bindings);
+    dispatch(setPhysicalObjects(uniqueTriples))
   }
 
   // Fetch attributes for a specific FysicalObject class
   const fetchAttributesForClass = async (classUri: string) => {
     if(! classUri) return;
     const response = await getAttributesForClass(classUri);
-    const bindings = makeBindingsObject(response);
-    setAttributes(bindings);
+    const triples = makeTriplesObject(response);
+    setAttributes(triples);
   }
 
   // Function that runs if component loads
@@ -89,7 +100,7 @@ const EditObject = () => {
     fetchAttributesForClass(selectedObjectType);
   }, [selectedObjectType])
 
-  if(! fysicalObjects || fysicalObjects.length <= 0) {
+  if(! physicalObjects || physicalObjects.length <= 0) {
     return (
       <div className="EditObject">
         Bezig met laden van objecttypen...
@@ -102,9 +113,9 @@ const EditObject = () => {
     let ret: any = [];
     for(let x in objects) {
       ret.push({
-        id: objects[x].get('label'),
-        value: objects[x].get('label'),
-        label: objects[x].get('classURI')
+        id: objects[x]['label'].value,
+        value: objects[x]['label'].value,
+        label: objects[x]['classURI'].value
       });
     }
     return ret;
@@ -112,15 +123,22 @@ const EditObject = () => {
 
   return (
     <div className="EditObject">
+
       <DatalistInput
         placeholder="Objecttype"
         label="Selecteer een objecttype"
         onSelect={(item) => {
           setSelectedObjectType(item.label || '')
         }}
-        items={prepareForDataList(fysicalObjects)}
+        items={prepareForDataList(physicalObjects)}
       />
-      {selectedObjectType && <div style={{margin: '15px 0'}}>
+      {selectedObjectType}
+
+      {selectedObjectType && ! selectedObjectTypeLocation && <p>
+        Plaats het object op de kaart
+      </p>}
+
+      {selectedObjectType && selectedObjectTypeLocation && <div style={{margin: '15px 0'}}>
         <Attributes data={attributes} />
         <div style={{margin: '15px 0'}}>
           <Button>
