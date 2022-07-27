@@ -14,6 +14,10 @@ For querying IMBOR we use the following resources:
 
 Read the docs on how to authenticate and query for the Laces Hub: https://docs.laces.tech/hub/9.0.8/security.html#authentication
 
+To browse through the onto, check:
+
+- https://docs.crow.nl/onto-verkenner/imbor/#/view
+
 # Running this app
 
 ## Prerequisites
@@ -58,12 +62,14 @@ You can learn more in the [Create React App documentation](https://facebook.gith
 
 To learn React, check out the [React documentation](https://reactjs.org/).
 
+To learn SPARQL, check https://www.w3.org/2009/Talks/0615-qbe/ 
+
 # Libraries
 
 In this demo app we use the following libraries:
 
 - https://github.com/andrelandgraf/react-datalist-input
 
-Potential interesting libraries:
+Potentially interesting libraries:
 
 - https://comunica.dev/docs/query/getting_started/query_app/
