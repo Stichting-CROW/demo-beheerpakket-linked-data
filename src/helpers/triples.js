@@ -36,5 +36,5 @@ const getUniquePhysicalObjects = (input) => {
 export {
   makeTriple,
   makeTriplesObject,
-  getUniquePhysicalObjects
+  getUniquePhysicalObjects,
 }

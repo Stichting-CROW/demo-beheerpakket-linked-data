@@ -10,6 +10,13 @@ import './MapTools.css'
 const MapTools = () => {
   const [isFormVisible, setIsFormVisible] = useState(false);
 
+  useEffect(() => {
+    // Listen to markerClicked events
+    window.addEventListener("markerClicked", (e: any) => {
+      setIsFormVisible(true);
+    });
+  }, []);
+
   return (
     <div className="MapTools">
 
@@ -20,11 +27,12 @@ const MapTools = () => {
         {isFormVisible ? 'Annuleer' : 'Object toevoegen'}
       </Button>
 
-      {isFormVisible && <div
+      <div
         className="InfoBox"
+        style={{display: isFormVisible ? 'block' : 'none'}}
       >
         <EditObject />
-      </div>}
+      </div>
 
       <div className="my-4">
         <ObjectList />

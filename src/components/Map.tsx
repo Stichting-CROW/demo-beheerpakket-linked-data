@@ -1,6 +1,12 @@
 import {useState, useEffect, useRef} from 'react';
 import maplibregl from 'maplibre-gl';
 
+import {
+  getDataStore,
+  getObject,
+  getAttributeValue
+} from '../helpers/dataStore';
+
 import './Map.css';
 
 const Map = () => {
@@ -48,7 +54,6 @@ const Map = () => {
             lat: lngLat.lat
           }
         });
-
         window.dispatchEvent(myEvent);
       }
 
@@ -87,22 +92,57 @@ const Map = () => {
     activeMarker
   ])
 
+  const preparePopup = (uuid) => {
+    // Load data store
+    const dataStore = getDataStore();
+    // Get object from store
+    const object = getObject(dataStore, uuid);
+    // Get 'identificatie' value
+    const identificatie = getAttributeValue(object, 'identificatie');
+    let popup;
+    if(identificatie) {
+      // Create popup
+      popup = new maplibregl.Popup({ offset: 38 }).setText(
+        identificatie
+      );
+    }
+    return popup;
+  }
+
   const addMarker = (map, uuid, lngLat) => {
     if(! uuid) return;
     if(! lngLat || lngLat.length !== 2) return;
+
     // Create marker
     const marker = new maplibregl.Marker({
       draggable: false
     })
     .setLngLat([lngLat[0], lngLat[1]])
-    .addTo(map);
+
+    // Add popup to marker
+    const popup = preparePopup(uuid);
+    marker.setPopup(popup);
+
+    // Add marker to map
+    marker.addTo(map);
+
+    map.on('click', (e) => {
+      const targetElement = e.originalEvent.target;
+      const element = marker._element;
+      if (targetElement === element || element.contains((targetElement))) {
+        const myEvent = new CustomEvent("markerClicked", {
+          detail: {
+            uuid: uuid
+          }
+        });
+        window.dispatchEvent(myEvent);
+      }
+    })
   }
 
   const addMarkersToMap = (map) => {
     // Load data store
-    const dataStore_raw = localStorage.getItem('IMBOR_DEMO_APP_physicalObjects');
-    if(! dataStore_raw) return;
-    const dataStore = JSON.parse(dataStore_raw);
+    const dataStore = getDataStore();
     // Loop data store and check for object locations
     const getObjectLngLat = (uuid, object) => {
       let lngLat;

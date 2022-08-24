@@ -2,7 +2,11 @@ import {useState, useEffect, useRef} from 'react';
 // import Button from './Button';
 
 // Import helper functions
-// import EditObject from './EditObject/EditObject'
+import {
+  getDataStore,
+  getObject,
+  getAttributeValue
+} from '../../helpers/dataStore';
 
 import './ObjectList.css'
 
@@ -19,11 +23,34 @@ const objects: Object[] = [
   },
 ]
 
+const getObjects = () => {
+  // Load data store
+  const dataStore = getDataStore();
+  const objects = Object.keys(dataStore).map(key => {
+    return {
+      uuid: key,
+      label: getAttributeValue(dataStore[key], 'identificatie'),
+    }
+  });
+  return objects;
+}
+
 const ObjectRow = ({data}) => {
-  const something = () => {};
+  const openObjectDetails = (e) => {
+    // Click marker
+    const myEvent = new CustomEvent("markerClicked", {
+      detail: {
+        uuid: data.uuid
+      }
+    });
+    window.dispatchEvent(myEvent);
+    // Scroll to top of sidebar
+    var sidebar = document.getElementById('js-Sidebar');
+    sidebar.scrollTop = 0;
+  };
 
   return (
-    <a onClick={something} className="ObjectRow">
+    <a onClick={openObjectDetails} className="ObjectRow">
       {data.label}
     </a>
   )
@@ -40,8 +67,8 @@ const ObjectList = () => {
       </h2>
 
       <div>
-        {objects.map(x => {
-          return <ObjectRow key={x.uri} data={x} />
+        {getObjects().map(x => {
+          return <ObjectRow key={x.uuid} data={x} />
         })}
       </div>
 

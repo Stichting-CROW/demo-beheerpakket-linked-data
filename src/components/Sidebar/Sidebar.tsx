@@ -11,7 +11,7 @@ const Sidebar = () => {
   const [isFormVisible, setIsFormVisible] = useState(false);
 
   return (
-    <div className="Sidebar">
+    <div className="Sidebar" id="js-Sidebar">
 
       <h1>
         IMBOR demo app
