@@ -7,7 +7,7 @@ const FormLabel = ({
 }) => {
   return (
     <label htmlFor={id} className="FormLabel">
-      <b>
+      <b className="label">
         {title}
       </b>
       <div>

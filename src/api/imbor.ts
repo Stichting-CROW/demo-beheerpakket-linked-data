@@ -56,6 +56,7 @@ export const getFysicalObjects = async (): Promise<any> => {
 
 }
 
+// Inspiration: https://github.com/Stichting-CROW/ldp-queries/blob/main/src/public/IMBOR2022_Attributen_per_Klasse.rq#L38
 export const getAttributesForClass = async (classUri: string): Promise<any> => {
   const query = `
     PREFIX nen2660: <https://w3id.org/nen2660/def#>
@@ -65,20 +66,15 @@ export const getAttributesForClass = async (classUri: string): Promise<any> => {
     PREFIX dash: <http://datashapes.org/dash#>
     PREFIX sh: <http://www.w3.org/ns/shacl#>
 
-    # Inspiration: https://github.com/Stichting-CROW/ldp-queries/blob/main/src/public/IMBOR2022_Attributen_per_Klasse.rq#L38
     SELECT
       ?entry_iri ?entry_text ?entry_definition ?group_iri
     WHERE {
-        <${classUri}> rdf:type rdfs:Class ;
-                      dash:abstract false ;
-                      rdfs:subClassOf ?group_iri ;
-                      rdfs:subClassOf* nen2660:PhysicalObject .
-
-        <${classUri}> sh:property/sh:path ?entry_iri .
-
-        OPTIONAL { ?attributeURI skos:prefLabel ?entry_text . }
-        OPTIONAL { ?attributeURI skos:definition ?entry_definition . }
-        OPTIONAL { ?attribuut nen2660:hasQuantityKind/skos:prefLabel ?attributQuantityKind . }
+        ?group_iri sh:property/sh:path ?entry_iri .
+        OPTIONAL { ?entry_iri skos:prefLabel ?entry_text . }
+        OPTIONAL { ?entry_iri skos:definition ?entry_definition . }
+        OPTIONAL { ?entry_iri nen2660:hasQuantityKind/skos:prefLabel ?attributQuantityKind . }
+      
+        <${classUri}> rdfs:subClassOf* ?group_iri .
     }
 
    `

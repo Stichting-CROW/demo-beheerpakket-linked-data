@@ -6,6 +6,10 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+window['notify'] = (msg) => {
+  alert(msg);
+}
+
 const root = createRoot(
   document.getElementById('root') as HTMLElement
 );

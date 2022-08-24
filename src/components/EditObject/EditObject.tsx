@@ -40,9 +40,9 @@ const Attributes = ({data}) => {
     <div data-name="attributes">
       {data.map(triple => {
         // Check if attributeLabel exists
-        if(! triple['entry_text'].value) return;
+        if(! triple['entry_text'] || ! triple['entry_text'].value) return;
         // Define ID
-        const id = `js-attributeLabel-${triple['entry_text'].value}`;
+        const id = `js-attribute-input-${triple['entry_text'].value}`;
         return <div
           key={id}
           data-name="attribute"
@@ -54,6 +54,9 @@ const Attributes = ({data}) => {
               type="text"
               name={triple['entry_text'].value}
             />
+            <small>
+              {triple['entry_definition'] ? triple['entry_definition'].value : ''}
+            </small>
           </FormLabel>
         </div>
       })}
@@ -63,11 +66,14 @@ const Attributes = ({data}) => {
 
 const selectedObjectTypeLocation = true;
 
+type lngLat = [number, number][];
+
 const EditObject = () => {
   // Define state variables
   const [isFormVisible, setIsFormVisible] = useState(true);
   const [attributes, setAttributes] = useState([]);
-  const [selectedObjectType, setSelectedObjectType] = useState<string>('');
+  const [locationOnMap, setLocationOnMap] = useState<lngLat>([]);
+  const [selectedObjectType, setSelectedObjectType] = useState<any>();
 
   // Get store variables
   const physicalObjects = useSelector(selectPhysicalObjects);
@@ -76,6 +82,10 @@ const EditObject = () => {
   // Fetch fysical objects
   const fetchFysicalObjects = async () => {
     const response = await getFysicalObjects()
+    if(! response) {
+      window['notify']('Error loading fysical objects')
+      return;
+    }
     const uniqueTriples = getUniquePhysicalObjects(response.results.bindings);
     dispatch(setPhysicalObjects(uniqueTriples))
   }
@@ -93,11 +103,19 @@ const EditObject = () => {
     fetchFysicalObjects()
   }, [])
 
+  // Function that runs if component loads
+  useEffect(() => {
+    // Listen to markerUpdated events
+    window.addEventListener("markerUpdated", (e: any) => {
+      setLocationOnMap([e.detail.lng, e.detail.lat]);
+    });
+  }, [])
+
   // Function that runs if selected object type changes
   useEffect(() => {
-    if(selectedObjectType === null) return;
+    if(! selectedObjectType) return;
 
-    fetchAttributesForClass(selectedObjectType);
+    fetchAttributesForClass(selectedObjectType.label);
   }, [selectedObjectType])
 
   if(! physicalObjects || physicalObjects.length <= 0) {
@@ -121,18 +139,69 @@ const EditObject = () => {
     return ret;
   }
 
+  const handleSubmit = () => {
+    let attributesArray = [];
+    // Validate that location was set
+    if(! locationOnMap || locationOnMap.length <= 0) {
+      window['notify']('Verplaats eerst de marker op de kaart');
+      return;
+    }
+    // Add objectType into dataStore object
+    attributesArray.push({
+      entry_text: 'objectType',
+      entry_value: selectedObjectType.label
+    })
+    // Add lnglat into dataStore object
+    attributesArray.push({
+      entry_text: 'lngLat',
+      entry_value: locationOnMap
+    })
+    // Add all attribute values into dataStore object
+    attributes.forEach(x => {
+      if(! x.entry_text) return;
+      console.log('x.entry_text.value', x.entry_text.value, 'x.entry_text', x.entry_text)
+      console.log(`js-attribute-input-${x.entry_text.value}`)
+      const input_field = document.getElementById(`js-attribute-input-${x.entry_text.value}`) as HTMLInputElement | null;
+      const entry_value = input_field?.value;
+      console.log('input_field', input_field, 'entry_value', entry_value)
+      if(! entry_value) return;
+      attributesArray.push({
+        entry_iri: x.entry_iri ? x.entry_iri.value : null,
+        entry_text: x.entry_text.value,
+        entry_definition: x.entry_definition ? x.entry_definition.value : null,
+        entry_value: entry_value,
+        group_iri: x.group_iri ? x.group_iri.value : null,
+      });
+    })
+    console.log(attributesArray)
+    // Save the data with an unikue ID as key
+    const uuid = crypto.randomUUID();
+    // Get existing data store
+    const dataStore_raw = localStorage.getItem('IMBOR_DEMO_APP_physicalObjects');
+    let dataStore = {};
+    if(dataStore_raw) {
+      dataStore = JSON.parse(dataStore_raw);
+    }
+    // Store attributesArray with all values into localStorage
+    dataStore[uuid] = attributesArray;
+    localStorage.setItem('IMBOR_DEMO_APP_physicalObjects', JSON.stringify(dataStore));
+    console.info('Saved into localStorage');
+  }
+
   return (
-    <div className="EditObject">
+    <form className="EditObject">
 
       <DatalistInput
         placeholder="Objecttype"
         label="Selecteer een objecttype"
         onSelect={(item) => {
-          setSelectedObjectType(item.label || '')
+          setSelectedObjectType(item)
+         
+          let event = new Event("addMarker");
+          window.dispatchEvent(event);
         }}
         items={prepareForDataList(physicalObjects)}
       />
-      {selectedObjectType}
 
       {selectedObjectType && ! selectedObjectTypeLocation && <p>
         Plaats het object op de kaart
@@ -141,12 +210,15 @@ const EditObject = () => {
       {selectedObjectType && selectedObjectTypeLocation && <div style={{margin: '15px 0'}}>
         <Attributes data={attributes} />
         <div style={{margin: '15px 0'}}>
-          <Button>
+          <Button onClick={(e) => {
+            e.preventDefault();
+            handleSubmit();
+          }}>
             Opslaan
           </Button>
         </div>
       </div>}
-    </div>
+    </form>
   )
 }
 

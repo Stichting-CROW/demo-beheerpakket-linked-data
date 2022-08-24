@@ -1,15 +1,9 @@
 .MapTools {
   position: relative;
-  margin: 15px;
+  margin: 15px 0;
 }
 
 .InfoBox {
   background: #fff;
-  position: absolute;
-  padding: 1rem;
-  left: 0;
-  top: 3rem;
-  max-width: 1000px;
-  height: 500px;
-  overflow: auto;
+  margin: 15px 0;
 }

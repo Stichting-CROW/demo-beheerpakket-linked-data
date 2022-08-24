@@ -2,12 +2,13 @@ import './Button.css';
 
 interface ButtonProps {
   children: any,
-  onClick?: any
+  classes?: string,
+  onClick?: any,
 }
 
 const Button = (props: ButtonProps) => {
   return (
-    <button className="Button" onClick={props.onClick}>
+    <button className={`Button ${props.classes || ''}`} onClick={props.onClick}>
       {props.children}
     </button>
   )

@@ -1,4 +1,4 @@
-import {useEffect, useRef} from 'react';
+import {useState, useEffect, useRef} from 'react';
 import maplibregl from 'maplibre-gl';
 
 import './Map.css';
@@ -6,6 +6,8 @@ import './Map.css';
 const Map = () => {
   const mapContainer = useRef(null);
   let map: any;
+
+  const [activeMarker, setActiveMarker] = useState(null);
 
   // Function that runs on component load
   useEffect(() => {
@@ -22,7 +24,105 @@ const Map = () => {
       zoom: 18 // starting zoom
     });
 
-  }, [map])
+    window['IMBOR_DEMO_APP_map'] = map;
+
+    addMarkersToMap(map);
+
+  }, [])
+
+  // Function for adding and removing markers
+  useEffect(() => {
+    // Add marker
+    const addDraggableMarker = (theMap) => {
+      if(! theMap) return;
+      if(activeMarker) return;
+
+      const onDragEnd = async () => {
+        // Get lng/lat of this marker
+        const lngLat = marker.getLngLat();
+
+        // Trigger custom event that can be listened to
+        const myEvent = new CustomEvent("markerUpdated", {
+          detail: {
+            lng: lngLat.lng,
+            lat: lngLat.lat
+          }
+        });
+
+        window.dispatchEvent(myEvent);
+      }
+
+      // Get center of map
+      const {lng, lat} = theMap.getCenter();
+      const marker = new maplibregl.Marker({
+        draggable: true
+      })
+      .setLngLat([lng, lat])
+      .addTo(theMap);
+
+      setActiveMarker(marker);
+    
+      marker.on('dragend', onDragEnd);
+      marker.on('ondblclick', () => {marker.remove()});
+    }
+
+    // Remove marker
+    const removeMarker = (theMap) => {
+      if(! activeMarker) return;
+      // Remove it
+      activeMarker.remove();
+      // Update state
+      setActiveMarker(null);
+    }
+
+    const callbackAdd = addDraggableMarker.bind(this, window['IMBOR_DEMO_APP_map']);
+    const callbackRemove = removeMarker.bind(this, window['IMBOR_DEMO_APP_map']);
+    window.addEventListener('addDraggableMarker', callbackAdd);
+    window.addEventListener('removeMarker', callbackRemove);
+    return () => {
+      window.removeEventListener('addDraggableMarker', callbackAdd);
+      window.removeEventListener('removeMarker', callbackRemove);
+    }
+  }, [
+    activeMarker
+  ])
+
+  const addMarker = (map, uuid, lngLat) => {
+    if(! uuid) return;
+    if(! lngLat || lngLat.length !== 2) return;
+    // Create marker
+    const marker = new maplibregl.Marker({
+      draggable: false
+    })
+    .setLngLat([lngLat[0], lngLat[1]])
+    .addTo(map);
+  }
+
+  const addMarkersToMap = (map) => {
+    // Load data store
+    const dataStore_raw = localStorage.getItem('IMBOR_DEMO_APP_physicalObjects');
+    if(! dataStore_raw) return;
+    const dataStore = JSON.parse(dataStore_raw);
+    // Loop data store and check for object locations
+    const getObjectLngLat = (uuid, object) => {
+      let lngLat;
+      object.forEach(x => {
+        if(x.entry_text === 'lngLat') {
+          lngLat = x.entry_value;
+        }
+      });
+      return {
+        uuid: uuid,
+        lngLat: lngLat
+      };
+    }
+    const objectLocations = Object.keys(dataStore).map(key => getObjectLngLat(key, dataStore[key])).filter(x => x.lngLat !== undefined);
+    // Add markers to the map
+    console.log('objectLocations', objectLocations)
+    objectLocations.forEach(x => {
+      addMarker(map, x.uuid, x.lngLat)
+    })
+  }
 
   return (
     <div key="mapContainer" ref={mapContainer} className="map" />

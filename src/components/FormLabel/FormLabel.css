@@ -2,3 +2,8 @@
   margin: 15px 0;
   display: block;
 }
+
+.FormLabel .label {
+  display: inline-block;
+  margin:  15px 0;
+}

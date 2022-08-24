@@ -15,3 +15,15 @@ code {
 * {
   box-sizing: border-box;
 }
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 15px 0;
+}
+
+a {
+  color: #434190;
+}
+
+.w-full {
+  width: 100%;
+}
