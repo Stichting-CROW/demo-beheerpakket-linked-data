@@ -8,31 +8,10 @@ import ObjectList from './ObjectList/ObjectList'
 import './MapTools.css'
 
 const MapTools = () => {
-  const [isFormVisible, setIsFormVisible] = useState(false);
-
-  useEffect(() => {
-    // Listen to markerClicked events
-    window.addEventListener("markerClicked", (e: any) => {
-      setIsFormVisible(true);
-    });
-  }, []);
-
   return (
     <div className="MapTools">
 
-      <Button
-        classes="w-full"
-        onClick={() => setIsFormVisible(! isFormVisible)}
-        >
-        {isFormVisible ? 'Annuleer' : 'Object toevoegen'}
-      </Button>
-
-      <div
-        className="InfoBox"
-        style={{display: isFormVisible ? 'block' : 'none'}}
-      >
-        <EditObject />
-      </div>
+      <EditObject />
 
       <div className="my-4">
         <ObjectList />

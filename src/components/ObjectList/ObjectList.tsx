@@ -26,6 +26,7 @@ const objects: Object[] = [
 const getObjects = () => {
   // Load data store
   const dataStore = getDataStore();
+  if(! dataStore) return;
   const objects = Object.keys(dataStore).map(key => {
     return {
       uuid: key,
@@ -59,6 +60,8 @@ const ObjectRow = ({data}) => {
 const ObjectList = () => {
   const [isFormVisible, setIsFormVisible] = useState(false);
 
+  const objects = getObjects();
+
   return (
     <div className="ObjectList">
 
@@ -67,9 +70,9 @@ const ObjectList = () => {
       </h2>
 
       <div>
-        {getObjects().map(x => {
+        {objects ? objects.map(x => {
           return <ObjectRow key={x.uuid} data={x} />
-        })}
+        }) : <div />}
       </div>
 
     </div>

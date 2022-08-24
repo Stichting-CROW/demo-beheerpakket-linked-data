@@ -143,6 +143,7 @@ const Map = () => {
   const addMarkersToMap = (map) => {
     // Load data store
     const dataStore = getDataStore();
+    if( ! dataStore) return;
     // Loop data store and check for object locations
     const getObjectLngLat = (uuid, object) => {
       let lngLat;

@@ -70,10 +70,10 @@ type lngLat = [number, number][];
 
 const EditObject = () => {
   // Define state variables
-  const [counter, setCounter] = useState(0);
-  const [isFormVisible, setIsFormVisible] = useState(true);
+  const [isFormVisible, setIsFormVisible] = useState(false);
   const [attributes, setAttributes] = useState([]);
   const [locationOnMap, setLocationOnMap] = useState<lngLat>([]);
+  const [activeUuid, setActiveUuid] = useState<any>();
   const [selectedObjectType, setSelectedObjectType] = useState<any>();
 
   // Get store variables
@@ -84,7 +84,7 @@ const EditObject = () => {
   const fetchFysicalObjects = async () => {
     const response = await getFysicalObjects()
     if(! response) {
-      // window['notify']('Error loading fysical objects')
+      console.error('Error loading fysical objects')
       return;
     }
     const uniqueTriples = getUniquePhysicalObjects(response.results.bindings);
@@ -126,6 +126,8 @@ const EditObject = () => {
     // Listen to markerClicked events
     window.addEventListener("markerClicked", (e: any) => {
       const object = fetchObjectFromStorage(e.detail.uuid);
+      setIsFormVisible(true);
+      setActiveUuid(e.detail.uuid)
       // Fetch classUri
       object.forEach(async x => {
         if(x.entry_text === 'objectType') {
@@ -189,6 +191,16 @@ const EditObject = () => {
     return ret;
   }
 
+  const resetFormState = () => {
+    setAttributes([])
+    setLocationOnMap([])
+    setSelectedObjectType(false);
+    setActiveUuid(false)
+    // Clear form
+    const form = document.getElementById('js-editObjectForm') as HTMLFormElement | null;
+    form.reset();
+  }
+
   const handleSubmit = () => {
     let attributesArray = [];
     // Validate that location was set
@@ -197,7 +209,6 @@ const EditObject = () => {
       return;
     }
     // Add objectType into dataStore object
-    console.log('selectedObjectType', selectedObjectType);
     attributesArray.push({
       entry_text: 'objectType',
       entry_iri: selectedObjectType.label,
@@ -222,8 +233,8 @@ const EditObject = () => {
         group_iri: x.group_iri ? x.group_iri.value : null,
       });
     })
-    // Save the data with an unikue ID as key
-    const uuid = crypto.randomUUID();
+    // Save the data with existing id OR an unikue ID as key
+    const uuid = activeUuid || crypto.randomUUID();
     // Get existing data store
     const dataStore_raw = localStorage.getItem('IMBOR_DEMO_APP_physicalObjects');
     let dataStore = {};
@@ -234,37 +245,26 @@ const EditObject = () => {
     dataStore[uuid] = attributesArray;
     localStorage.setItem('IMBOR_DEMO_APP_physicalObjects', JSON.stringify(dataStore));
     // Close EditForm
+    resetFormState();
     setIsFormVisible(false);
-    setAttributes([])
-    setLocationOnMap([])
-    setSelectedObjectType(false);
     console.info('Saved into localStorage');
   }
 
+  const showAttributes = selectedObjectType && locationOnMap && locationOnMap.length == 2;
+
   return (
-    <form className="EditObject">
-
-      <DatalistInput
-        placeholder="Objecttype"
-        label="Selecteer een objecttype"
-        id="objectType"
-        onSelect={(item) => {
-          setSelectedObjectType(item)
-          
-          if(! locationOnMap || locationOnMap.length < 2) {
-            let event = new Event("addDraggableMarker");
-            window.dispatchEvent(event);
-          }
+    <>
+      <Button
+        classes="w-full"
+        onClick={() => {
+          setIsFormVisible(! isFormVisible);
+          resetFormState();
         }}
-        items={prepareForDataList(physicalObjects)}
-      />
+        >
+        {isFormVisible ? 'Annuleer' : 'Object toevoegen'}
+      </Button>
 
-      {selectedObjectType && ! selectedObjectTypeLocation && <p>
-        Plaats het object op de kaart
-      </p>}
-
-      {selectedObjectType && selectedObjectTypeLocation && <div style={{margin: '15px 0'}}>
-        <Attributes data={attributes} />
+      {showAttributes && (
         <div style={{margin: '15px 0'}}>
           <Button onClick={(e) => {
             e.preventDefault();
@@ -275,8 +275,41 @@ const EditObject = () => {
             Opslaan
           </Button>
         </div>
-      </div>}
-    </form>
+      )}
+
+      <div
+        className="InfoBox"
+        style={{display: isFormVisible ? 'block' : 'none'}}
+      >
+
+        <form className="EditObject" id="js-editObjectForm">
+
+          <DatalistInput
+            placeholder="Objecttype"
+            label="Selecteer een objecttype"
+            id="objectType"
+            onSelect={(item) => {
+              setSelectedObjectType(item)
+              
+              if(! locationOnMap || locationOnMap.length < 2) {
+                let event = new Event("addDraggableMarker");
+                window.dispatchEvent(event);
+              }
+            }}
+            items={prepareForDataList(physicalObjects)}
+          />
+
+          {selectedObjectType && (! locationOnMap || locationOnMap.length < 2) && ! activeUuid && <p>
+            <b>Plaats het object op de kaart door de marker te verplaatsen.</b>
+          </p>}
+
+          {showAttributes && <div style={{margin: '15px 0'}}>
+            <Attributes data={attributes} />
+          </div>}
+        </form>
+
+      </div>
+    </>
   )
 }
 
