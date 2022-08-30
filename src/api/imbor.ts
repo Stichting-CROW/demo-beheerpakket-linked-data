@@ -1,4 +1,6 @@
 import {config} from '../config'
+import {query as attributesQuery} from '../queries/nen2660-attributes.rq.js';
+import {query as fysicalObjectsQuery} from '../queries/nen2660-attributes.rq.js';
 
 // doRequest :: string -> json
 const doRequest = async (url: string) => {
@@ -20,31 +22,7 @@ export const getKern = async (query: string) => {
 }
 
 export const getFysicalObjects = async (): Promise<any> => {
-  const query = `
-
-    PREFIX nen2660: <https://w3id.org/nen2660/def#>
-    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-    PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-    PREFIX dash: <http://datashapes.org/dash#>
-
-    SELECT
-      ?classURI ?label ?subClassOf
-    WHERE {
-      ?classURI rdf:type rdfs:Class ;
-                dash:abstract false ;
-                rdfs:subClassOf* ?reeelOfRuimtelijk;
-                rdfs:subClassOf ?subClassOf;
-                skos:prefLabel ?label .
-
-      FILTER (
-        ?reeelOfRuimtelijk IN (
-          nen2660:RealObject , nen2660:FunctionalSpace
-        )
-      )
-    }
-    ORDER BY STR(?label)
-   `
+  const query = fysicalObjectsQuery();
 
   try{
     const response: {[index: string]: any} = await getKern(encodeURIComponent(query));
@@ -58,26 +36,7 @@ export const getFysicalObjects = async (): Promise<any> => {
 
 // Inspiration: https://github.com/Stichting-CROW/ldp-queries/blob/main/src/public/IMBOR2022_Attributen_per_Klasse.rq#L38
 export const getAttributesForClass = async (classUri: string): Promise<any> => {
-  const query = `
-    PREFIX nen2660: <https://w3id.org/nen2660/def#>
-    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-    PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-    PREFIX dash: <http://datashapes.org/dash#>
-    PREFIX sh: <http://www.w3.org/ns/shacl#>
-
-    SELECT
-      ?entry_iri ?entry_text ?entry_definition ?group_iri
-    WHERE {
-        ?group_iri sh:property/sh:path ?entry_iri .
-        OPTIONAL { ?entry_iri skos:prefLabel ?entry_text . }
-        OPTIONAL { ?entry_iri skos:definition ?entry_definition . }
-        OPTIONAL { ?entry_iri nen2660:hasQuantityKind/skos:prefLabel ?attributQuantityKind . }
-      
-        <${classUri}> rdfs:subClassOf* ?group_iri .
-    }
-
-   `
+  const query = attributesQuery(classUri)
 
   try{
     const response: {[index: string]: any} = await getKern(encodeURIComponent(query));
