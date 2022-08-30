@@ -68,9 +68,18 @@ const Map = () => {
         window.dispatchEvent(myEvent);
       }
 
+      // Create a DOM element for the marker (custom image)
+      var el = document.createElement('div');
+      el.className = 'marker';
+      el.style.backgroundImage = `url('/components/Map/marker-new.png')`
+      el.style.backgroundRepeat = 'no-repeat'
+      el.style.backgroundSize = 'contain'
+      el.style.width = '50px';
+      el.style.height = '50px';
+
       // Get center of map
       const {lng, lat} = theMap.getCenter();
-      const marker = new maplibregl.Marker({
+      const marker = new maplibregl.Marker(el, {
         draggable: true
       })
       .setLngLat([lng, lat])

@@ -14,17 +14,6 @@ import './ObjectList.css'
 
 import type {Object} from '../../models/Object';
 
-const objects: Object[] = [
-  {
-    label: '5G-antenne',
-    uri: 'https://data.crow.nl/imbor/def/6f4ed3b6-6fcd-4816-b573-29b1d8dd69a7'
-  },
-  {
-    label: 'Afvalbak',
-    uri: 'https://data2.crow.nl/imbor/def/6f4ed3b6-6fcd-4816-b573-29b1d8dd69a7'
-  },
-]
-
 const getObjects = () => {
   // Load data store
   const dataStore = getDataStore();
