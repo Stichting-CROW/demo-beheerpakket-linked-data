@@ -1,8 +1,14 @@
 .ObjectRow {
+  display: flex;
   margin: 5px 0;
-  display: block;
   cursor: pointer;
 }
 .ObjectRow:hover {
   color: #4c51bf;
 }
+
+.ObjectRow-title {
+  flex: 1;
+}
+
+

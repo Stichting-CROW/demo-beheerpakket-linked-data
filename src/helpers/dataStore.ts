@@ -19,6 +19,27 @@ export const getObject = (dataStore, uuid) => {
   return false;
 }
 
+export const deleteObject = (uuid) => {
+  if(! uuid) return;
+
+  // Get dataStore
+  const dataStore = getDataStore();
+
+  // Create new dataStore without the given uuid
+  let newDataStore = {};
+  Object.keys(dataStore).forEach(key => {
+    if(key !== uuid) {
+      newDataStore[key] = dataStore[key];
+    }
+  })
+
+  // Replace existing dataStore with the new dataStore
+  localStorage.setItem('IMBOR_DEMO_APP_physicalObjects', JSON.stringify(newDataStore));
+
+  // Return newDataStore
+  return newDataStore;
+}
+
 export const getAttributeValue = (object, attributeName) => {
   let found;
   object.forEach(x => {

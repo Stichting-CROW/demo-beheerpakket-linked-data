@@ -83,8 +83,7 @@ const EditObject = () => {
   // Fetch fysical objects
   const fetchFysicalObjects = async () => {
     const response = await getFysicalObjects()
-    if(! response) {
-      console.error('Error loading fysical objects')
+    if(! response || ! response.results) {
       return;
     }
     const uniqueTriples = getUniquePhysicalObjects(response.results.bindings);
@@ -157,6 +156,7 @@ const EditObject = () => {
         }
       })
     });
+   
     // Listen to markerUpdated events
     window.addEventListener("markerUpdated", (e: any) => {
       setLocationOnMap([e.detail.lng, e.detail.lat]);
@@ -201,6 +201,7 @@ const EditObject = () => {
     form.reset();
   }
 
+  // Function that runds if user saves object
   const handleSubmit = () => {
     let attributesArray = [];
     // Validate that location was set
@@ -247,6 +248,10 @@ const EditObject = () => {
     // Close EditForm
     resetFormState();
     setIsFormVisible(false);
+    // Reload data
+    const myEvent = new CustomEvent("fysicalObjectsUpdated");
+    window.dispatchEvent(myEvent);
+
     console.info('Saved into localStorage');
   }
 

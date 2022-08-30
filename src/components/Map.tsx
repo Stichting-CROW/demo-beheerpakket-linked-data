@@ -14,6 +14,7 @@ const Map = () => {
   let map: any;
 
   const [activeMarker, setActiveMarker] = useState(null);
+  const [allMarkers, setAllMarkers] = useState([]);// Keep track of all markers
 
   // Function that runs on component load
   useEffect(() => {
@@ -32,9 +33,19 @@ const Map = () => {
 
     window['IMBOR_DEMO_APP_map'] = map;
 
+    // Add markers to the map
     addMarkersToMap(map);
-
   }, [])
+
+  // On component load: listen to fysicalObjectsUpdated events
+  useEffect(() => {
+    const handler = (e: any) => addMarkersToMap();
+    window.addEventListener("fysicalObjectsUpdated", handler);
+
+    return () => {
+      window.removeEventListener("fysicalObjectsUpdated", handler);
+    }
+  }, []);
 
   // Function for adding and removing markers
   useEffect(() => {
@@ -126,6 +137,9 @@ const Map = () => {
     // Add marker to map
     marker.addTo(map);
 
+    // Save marker in local variable, so we can remove it later
+    allMarkers.push(marker)
+
     map.on('click', (e) => {
       const targetElement = e.originalEvent.target;
       const element = marker._element;
@@ -140,7 +154,23 @@ const Map = () => {
     })
   }
 
-  const addMarkersToMap = (map) => {
+  const removeMarkersFromMap = (map?: any) => {
+    if(! map) map = window['IMBOR_DEMO_APP_map'];
+
+    // Remove all markers
+    allMarkers.forEach(marker => {
+      marker.remove()
+    })
+
+    return true;
+  }
+
+  const addMarkersToMap = (map?: any) => {
+    if(! map) map = window['IMBOR_DEMO_APP_map'];
+
+    // Remove all existing markers on the map
+    removeMarkersFromMap();
+
     // Load data store
     const dataStore = getDataStore();
     if( ! dataStore) return;
@@ -159,7 +189,6 @@ const Map = () => {
     }
     const objectLocations = Object.keys(dataStore).map(key => getObjectLngLat(key, dataStore[key])).filter(x => x.lngLat !== undefined);
     // Add markers to the map
-    console.log('objectLocations', objectLocations)
     objectLocations.forEach(x => {
       addMarker(map, x.uuid, x.lngLat)
     })

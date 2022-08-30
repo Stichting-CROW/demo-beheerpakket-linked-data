@@ -1,3 +1,4 @@
+
 import {useState, useEffect, useRef} from 'react';
 // import Button from './Button';
 
@@ -5,6 +6,7 @@ import {useState, useEffect, useRef} from 'react';
 import {
   getDataStore,
   getObject,
+  deleteObject,
   getAttributeValue
 } from '../../helpers/dataStore';
 
@@ -49,18 +51,56 @@ const ObjectRow = ({data}) => {
     var sidebar = document.getElementById('js-Sidebar');
     sidebar.scrollTop = 0;
   };
+  const deleteObjectHandler = (e) => {
+    e.preventDefault();
+
+    // Ask for confirmation
+    if(! window.confirm(`Weet je zeker dat je object "${data.label}" wilt verwijderen?`)) {
+      return;
+    }
+
+    // Delete object from localStorage
+    deleteObject(data.uuid);
+
+    // Reload data
+    const myEvent = new CustomEvent("fysicalObjectsUpdated");
+    window.dispatchEvent(myEvent);
+  }
 
   return (
-    <a onClick={openObjectDetails} className="ObjectRow">
-      {data.label}
-    </a>
+    <div className="ObjectRow">
+      <a onClick={openObjectDetails} className="ObjectRow-title">
+        {data.label}
+      </a>
+      <a onClick={deleteObjectHandler} className="ObjectRow-delete">
+        X
+      </a>
+    </div>
   )
 }
 
 const ObjectList = () => {
   const [isFormVisible, setIsFormVisible] = useState(false);
+  const [objects, setObjects] = useState([]);
 
-  const objects = getObjects();
+  const fetchObjects = () => {
+    setObjects(getObjects())
+  }
+
+  // On component load: load objects
+  useEffect(() => {
+    fetchObjects();
+  }, []);
+
+  // On component load: listen to fysicalObjectsUpdated events
+  useEffect(() => {
+    const handler = (e: any) => fetchObjects();
+    window.addEventListener("fysicalObjectsUpdated", handler);
+
+    return () => {
+      window.removeEventListener("fysicalObjectsUpdated", handler);
+    }
+  }, []);
 
   return (
     <div className="ObjectList">
