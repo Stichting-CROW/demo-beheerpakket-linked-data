@@ -7,6 +7,11 @@ import {
   getAttributeValue
 } from '../helpers/dataStore';
 
+// Import models
+import type {
+  Object
+} from '../models/Object';
+
 import './Map.css';
 
 const Map = () => {
@@ -45,7 +50,7 @@ const Map = () => {
     return () => {
       window.removeEventListener("fysicalObjectsUpdated", handler);
     }
-  }, []);
+  }, [allMarkers]);
 
   // Function for adding and removing markers
   useEffect(() => {
@@ -85,7 +90,11 @@ const Map = () => {
       .setLngLat([lng, lat])
       .addTo(theMap);
 
+      // Make this marker the active marker
       setActiveMarker(marker);
+
+      // Add this marker to the allMarkers variable
+      setAllMarkers([...allMarkers, marker]);
     
       marker.on('dragend', onDragEnd);
       marker.on('ondblclick', () => {marker.remove()});
@@ -113,10 +122,8 @@ const Map = () => {
   ])
 
   const preparePopup = (uuid) => {
-    // Load data store
-    const dataStore = getDataStore();
     // Get object from store
-    const object = getObject(dataStore, uuid);
+    const object = getObject(null, uuid);
     // Get 'identificatie' value
     const identificatie = getAttributeValue(object, 'identificatie');
     let popup;
@@ -146,6 +153,7 @@ const Map = () => {
     // Add marker to map
     marker.addTo(map);
 
+
     // Save marker in local variable, so we can remove it later
     allMarkers.push(marker)
 
@@ -171,6 +179,9 @@ const Map = () => {
       marker.remove()
     })
 
+    // Set active marker to 'null'
+    setActiveMarker(null);
+
     return true;
   }
 
@@ -182,21 +193,14 @@ const Map = () => {
 
     // Load data store
     const dataStore = getDataStore();
-    if( ! dataStore) return;
     // Loop data store and check for object locations
     const getObjectLngLat = (uuid, object) => {
-      let lngLat;
-      object.forEach(x => {
-        if(x.entry_text === 'lngLat') {
-          lngLat = x.entry_value;
-        }
-      });
       return {
         uuid: uuid,
-        lngLat: lngLat
+        lngLat: object.geometry
       };
     }
-    const objectLocations = Object.keys(dataStore).map(key => getObjectLngLat(key, dataStore[key])).filter(x => x.lngLat !== undefined);
+    const objectLocations = Object.keys(dataStore).map(uuid => getObjectLngLat(uuid, dataStore[uuid])).filter(x => x.lngLat !== undefined);
     // Add markers to the map
     objectLocations.forEach(x => {
       addMarker(map, x.uuid, x.lngLat)

@@ -10,9 +10,12 @@ import {
   getAttributeValue
 } from '../../helpers/dataStore';
 
-import './ObjectList.css'
+// Import models
+import type {
+  Object
+} from '../../models/Object';
 
-import type {Object} from '../../models/Object';
+import './ObjectList.css'
 
 const getObjects = () => {
   // Load data store
@@ -56,10 +59,15 @@ const ObjectRow = ({data}) => {
     window.dispatchEvent(myEvent);
   }
 
+  // Get object from store
+  const object = getObject(null, data.uuid);
+  // Get 'identificatie' value
+  const identificatie = getAttributeValue(object, 'identificatie');
+
   return (
     <div className="ObjectRow">
       <a onClick={openObjectDetails} className="ObjectRow-title">
-        {data.label}
+        {identificatie}
       </a>
       <a onClick={deleteObjectHandler} className="ObjectRow-delete">
         X
