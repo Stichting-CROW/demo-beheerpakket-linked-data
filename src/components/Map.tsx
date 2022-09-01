@@ -1,5 +1,7 @@
 import {useState, useEffect, useRef} from 'react';
 import maplibregl from 'maplibre-gl';
+import MapboxDraw from "@mapbox/mapbox-gl-draw";
+import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 
 import {
   getDataStore,
@@ -20,6 +22,8 @@ const Map = () => {
 
   const [activeMarker, setActiveMarker] = useState(null);
   const [allMarkers, setAllMarkers] = useState([]);// Keep track of all markers
+  const [isDrawingEnabled, setIsDrawingEnabled] = useState(false);
+  const [drawedGeometry, setDrawedGeometry] = useState(false);
 
   // Function that runs on component load
   useEffect(() => {
@@ -36,15 +40,27 @@ const Map = () => {
       zoom: 18 // starting zoom
     });
 
+    // Init map draw
+    const draw = new MapboxDraw({
+      displayControlsDefault: false,
+      controls: {
+        polygon: true,
+        trash: true
+      },
+    });
+    map.addControl(draw);
+
+    // Save global vars 
     window['IMBOR_DEMO_APP_map'] = map;
+    window['IMBOR_DEMO_APP_mapDraw'] = draw;
 
     // Add markers to the map
-    addMarkersToMap(map);
+    addShapesToMap(map);
   }, [])
 
   // On component load: listen to fysicalObjectsUpdated events
   useEffect(() => {
-    const handler = (e: any) => addMarkersToMap();
+    const handler = (e: any) => addShapesToMap();
     window.addEventListener("fysicalObjectsUpdated", handler);
 
     return () => {
@@ -64,19 +80,28 @@ const Map = () => {
         const lngLat = marker.getLngLat();
 
         // Trigger custom event that can be listened to
-        const myEvent = new CustomEvent("markerUpdated", {
+        const event1 = new CustomEvent("markerUpdated", {
           detail: {
             lng: lngLat.lng,
             lat: lngLat.lat
           }
         });
-        window.dispatchEvent(myEvent);
+        window.dispatchEvent(event1);
+
+        // Trigger custom event that can be listened to
+        const event2 = new CustomEvent("geometryUpdated", {
+          detail: {
+            geometry: 'point',
+            inputs: [lngLat.lng, lngLat.lat]
+          }
+        });
+        window.dispatchEvent(event2);
       }
 
       // Create a DOM element for the marker (custom image)
       var el = document.createElement('div');
       el.className = 'marker';
-      el.style.backgroundImage = `url('/components/Map/marker-new.png')`
+      el.style.backgroundImage = `url('${process.env.PUBLIC_URL}/components/Map/marker-new.png')`
       el.style.backgroundRepeat = 'no-repeat'
       el.style.backgroundSize = 'contain'
       el.style.width = '50px';
@@ -96,12 +121,15 @@ const Map = () => {
       // Add this marker to the allMarkers variable
       setAllMarkers([...allMarkers, marker]);
     
+      console.log('Add activeMarker', theMap, lng, lat)
+
       marker.on('dragend', onDragEnd);
       marker.on('ondblclick', () => {marker.remove()});
     }
 
     // Remove marker
     const removeMarker = (theMap) => {
+      console.log('removeMarker')
       if(! activeMarker) return;
       // Remove it
       activeMarker.remove();
@@ -121,6 +149,46 @@ const Map = () => {
     activeMarker
   ])
 
+  // Function for drawing shapes on the map
+  useEffect(() => {
+    const enableDrawing = () => {
+      setIsDrawingEnabled(true);
+      window['IMBOR_DEMO_APP_mapDraw'].changeMode('draw_polygon');
+    }
+    const disableDrawing = () => {
+      setIsDrawingEnabled(true);
+      window['IMBOR_DEMO_APP_mapDraw'].changeMode('simple_select');
+    }
+    const updatePolygon = (e) => {
+      if(! e.features) return;
+      if(! e.features[0]) return;
+
+      // Get the shape that was drawn
+      const shape = e.features[0];
+
+      // Trigger custom event that can be listened to
+      const event = new CustomEvent("geometryUpdated", {
+        detail: {
+          geometry: 'polygon',
+          inputs: shape.geometry.coordinates
+        }
+      });
+      window.dispatchEvent(event);
+    }
+    // Event handlers
+    window['IMBOR_DEMO_APP_map'].on('draw.create', updatePolygon);
+    window['IMBOR_DEMO_APP_map'].on('draw.update', updatePolygon);
+    window.addEventListener('enableDrawing', enableDrawing);
+    window.addEventListener('disableDrawing', disableDrawing);
+
+    return () => {
+      window.removeEventListener('enableDrawing', enableDrawing);
+      window.removeEventListener('disableDrawing', disableDrawing);
+    }
+  }, [
+    isDrawingEnabled
+  ])
+
   const preparePopup = (uuid) => {
     // Get object from store
     const object = getObject(null, uuid);
@@ -136,15 +204,15 @@ const Map = () => {
     return popup;
   }
 
-  const addMarker = (map, uuid, lngLat) => {
+  const drawMarker = (map, uuid, geometry) => {
     if(! uuid) return;
-    if(! lngLat || lngLat.length !== 2) return;
+    if(! geometry || ! geometry.inputs) return;
 
     // Create marker
     const marker = new maplibregl.Marker({
       draggable: false
     })
-    .setLngLat([lngLat[0], lngLat[1]])
+    .setLngLat([geometry.inputs[0], geometry.inputs[1]])
 
     // Add popup to marker
     const popup = preparePopup(uuid);
@@ -152,7 +220,6 @@ const Map = () => {
 
     // Add marker to map
     marker.addTo(map);
-
 
     // Save marker in local variable, so we can remove it later
     allMarkers.push(marker)
@@ -171,6 +238,21 @@ const Map = () => {
     })
   }
 
+  const drawPolygon = (map, uuid, geometry) => {
+    var ids = window['IMBOR_DEMO_APP_mapDraw'].add({
+      type: 'FeatureCollection',
+      features: [{
+        type: 'Feature',
+        properties: {},
+        id: uuid,
+        geometry: {
+          "type": "Polygon",
+          "coordinates": geometry.inputs
+        }
+      }]
+    });
+  }
+
   const removeMarkersFromMap = (map?: any) => {
     if(! map) map = window['IMBOR_DEMO_APP_map'];
 
@@ -185,11 +267,24 @@ const Map = () => {
     return true;
   }
 
-  const addMarkersToMap = (map?: any) => {
+  const removeShapesFromMap = (map?: any) => {
     if(! map) map = window['IMBOR_DEMO_APP_map'];
 
-    // Remove all existing markers on the map
+    // Remove all shapes
+    var ids = window['IMBOR_DEMO_APP_mapDraw'].set({
+      type: 'FeatureCollection',
+      features: []
+    });
+
+    return true;
+  }
+
+  const addShapesToMap = (map?: any) => {
+    if(! map) map = window['IMBOR_DEMO_APP_map'];
+
+    // Remove all existing markers and shapes on the map
     removeMarkersFromMap();
+    removeShapesFromMap();
 
     // Load data store
     const dataStore = getDataStore();
@@ -197,13 +292,31 @@ const Map = () => {
     const getObjectLngLat = (uuid, object) => {
       return {
         uuid: uuid,
-        lngLat: object.geometry
+        geometry: object.geometry
       };
     }
-    const objectLocations = Object.keys(dataStore).map(uuid => getObjectLngLat(uuid, dataStore[uuid])).filter(x => x.lngLat !== undefined);
+    const objectLocations = Object.keys(dataStore).map(uuid => getObjectLngLat(uuid, dataStore[uuid])).filter(x => x.geometry !== undefined);
+
     // Add markers to the map
     objectLocations.forEach(x => {
-      addMarker(map, x.uuid, x.lngLat)
+      if(x.geometry.geometry === 'point') {
+        drawMarker(map, x.uuid, x.geometry)
+      }
+      else if(x.geometry.geometry === 'polygon') {
+        drawPolygon(map, x.uuid, x.geometry)
+      }
+    })
+
+    // If polygon is clicked
+    map.on('draw.selectionchange', (e) => {
+      if(! e.features || ! e.features[0]) return;
+
+      const myEvent = new CustomEvent("geometryClicked", {
+        detail: {
+          uuid: e.features[0].id
+        }
+      });
+      window.dispatchEvent(myEvent);
     })
   }
 

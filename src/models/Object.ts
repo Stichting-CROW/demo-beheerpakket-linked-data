@@ -1,7 +1,12 @@
-// Voorbeelddefinities
 export type UUID = string;
 export type URL = string;
-export type Geometry = any;
+export type Point = any;
+
+// https://pro.arcgis.com/en/pro-app/2.8/arcpy/classes/geometry.htm#S2_GUID-BC466D06-360C-42BD-B198-DA4139B45F49
+export type Geometry = {
+  geometry: string,// point, polygon, polyline, or multipoint
+  inputs: Point | object// The coordinates used to create the object. The data type can be either Point or Array objects
+};
 export type Literal = string | boolean | number | any;
 
 export class AttributeRelationValue<T extends Literal | URL> {
@@ -26,7 +31,7 @@ export type Object = {
   uuid: UUID;
   // Verwijst naar IMBOR (of andere ontologie), wel stabiel in IMBOR, zoals "Boom".
   type: URL;
-  // Opslag van geometrie, maar kan ook in this.attributes
+  // Opslag van geometrie
   geometry: Geometry;
   // Lijst van attributen, zoals "snoeifrequentie"
   attributes?: AttributeRelationValue<Literal>[];

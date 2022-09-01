@@ -9,7 +9,8 @@ import {
   UUID,
   Object,
   Literal,
-  AttributeRelationValue
+  AttributeRelationValue,
+  Geometry
 } from '../../models/Object';
 
 // Import components
@@ -21,7 +22,8 @@ import FormInput from '../FormInput/FormInput.jsx';
 import {
   getKern,
   getFysicalObjects,
-  getAttributesForClass
+  getAttributesForClass,
+  getGeoClasses
 } from '../../api/imbor'
 import {
   makeTriple,
@@ -88,6 +90,7 @@ const EditObject = () => {
   const [locationOnMap, setLocationOnMap] = useState<lngLat>([]);
   const [activeUuid, setActiveUuid] = useState<any>();
   const [selectedObjectType, setSelectedObjectType] = useState<any>();
+  const [geometry, setGeometry] = useState<Geometry>();
 
   // Get store variables
   const physicalObjects = useSelector(selectPhysicalObjects);
@@ -115,11 +118,12 @@ const EditObject = () => {
   // Function that runs if component loads
   useEffect(() => {
     fetchFysicalObjects()
+    getGeoClasses();
   }, [])
 
   // Function that runs if component loads
   useEffect(() => {
-    const markerClickedCallback = async (e: any) => {
+    const geometryClickedCallback = async (e: any) => {
       // Get clicked object data
       const object = getObject(null, e.detail.uuid);
       // Make edit form visible
@@ -132,33 +136,50 @@ const EditObject = () => {
       input_objectType?.setAttribute('placeholder', object.label);
       // Update 'objectType' state variable
       setSelectedObjectType({ label: object.uri, id: object.label });
-      // Add lngLat to state
+      // Add geometry (marker or polygon) to state
+      // But only if it's unedited
       if(object.geometry) {
-        setLocationOnMap(object.geometry);
+        setLocationOnMap(object.geometry.inputs);
+        setGeometry(object.geometry);
       }
       // Fetch attributes for object type
       const attributes = await fetchAttributesForClass(object.uri);
-      // Fill in all attributes
-      object.attributes.forEach(x => {
-        if(! x.value) return;
-        const el = document.getElementById(`js-attribute-input-${x.label}`) as HTMLInputElement | null;
-        el?.setAttribute('value', x.value);
-      })
+      // Fill in all attributes after a few milliseconds (so state can update first)
+      setTimeout(() => {
+        if(! object.attributes) return;
+        object.attributes.forEach(x => {
+          if(! x.value) return;
+          const el = document.getElementById(`js-attribute-input-${x.label}`) as HTMLInputElement | null;
+          el?.setAttribute('value', x.value);
+        })
+      }, 100)
     }
 
     const markerUpdatedCallback = (e: any) => {
       setLocationOnMap([e.detail.lng, e.detail.lat]);
     }
 
+    const geometryUpdatedCallback = (e: any) => {
+      setGeometry(e.detail);
+    }
+
     // Listen to markerClicked events
-    window.addEventListener("markerClicked", markerClickedCallback);
+    window.addEventListener("markerClicked", geometryClickedCallback);
 
     // Listen to markerUpdated events
     window.addEventListener("markerUpdated", markerUpdatedCallback);
 
+    // Listen to geometryClicked events
+    window.addEventListener("geometryClicked", geometryClickedCallback);
+
+    // Listen to geometryUpdated events
+    window.addEventListener("geometryUpdated", geometryUpdatedCallback);
+
     return () => {
-      window.removeEventListener("markerClicked", markerClickedCallback);
+      window.removeEventListener("markerClicked", geometryClickedCallback);
       window.removeEventListener("markerUpdated", markerUpdatedCallback);
+      window.removeEventListener("geometryUpdated", geometryUpdatedCallback);
+      window.removeEventListener("geometryClicked", geometryClickedCallback);
     }
   }, [
     activeUuid
@@ -200,8 +221,8 @@ const EditObject = () => {
   // Function that runs if user saves object
   const handleSubmit = () => {
     // Validate that location was set
-    if(! locationOnMap || locationOnMap.length <= 0) {
-      window['notify']('Verplaats eerst de marker op de kaart');
+    if(! geometry || ! geometry.inputs || geometry.inputs.length <= 0) {
+      window['notify']('Verplaats eerst de marker op de kaart of teken een gebied in');
       return;
     }
 
@@ -232,7 +253,7 @@ const EditObject = () => {
 
       uuid: uuid,
       type: '',
-      geometry: locationOnMap,
+      geometry: geometry,
       attributes: attributesArray
     }
 
@@ -245,12 +266,16 @@ const EditObject = () => {
     resetFormState();
     setIsFormVisible(false);
 
+    // Disable drawing
+    const event = new Event("disableDrawing");
+    window.dispatchEvent(event);
+
     // Return
     console.info('Saved into localStorage');
     return true;
   }
 
-  const showAttributes = selectedObjectType && locationOnMap && locationOnMap.length == 2;
+  const showAttributes = selectedObjectType && geometry && geometry.inputs;
 
   // If physical objects did not load: Show loading text
   if(! physicalObjects || physicalObjects.length <= 0) {
@@ -300,8 +325,13 @@ const EditObject = () => {
             onSelect={(item) => {
               setSelectedObjectType(item)
               
-              if(! locationOnMap || locationOnMap.length < 2) {
-                let event = new Event("addDraggableMarker");
+              const geotype = 'point';
+              if(! geometry || ! geometry.inputs) {
+                let event = (
+                  ! geotype
+                    ? new Event("enableDrawing")
+                    : new Event("addDraggableMarker")
+                )
                 window.dispatchEvent(event);
               }
             }}
