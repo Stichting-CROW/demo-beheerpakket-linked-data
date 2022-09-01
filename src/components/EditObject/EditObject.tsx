@@ -36,7 +36,9 @@ import {
 } from '../../helpers/dataStore';
 import {
   selectPhysicalObjects,
-  setPhysicalObjects
+  selectGeoClasses,
+  setPhysicalObjects,
+  setGeoClasses,
 } from './editObjectSlice';
 
 import '../MapTools.css'
@@ -95,6 +97,7 @@ const EditObject = () => {
 
   // Get store variables
   const physicalObjects = useSelector(selectPhysicalObjects);
+  const geoClasses = useSelector(selectGeoClasses);
   const dispatch = useDispatch();
 
   // Fetch fysical objects
@@ -105,6 +108,16 @@ const EditObject = () => {
     }
     const uniqueTriples = getUniquePhysicalObjects(response.results.bindings);
     dispatch(setPhysicalObjects(uniqueTriples))
+  }
+
+  // Fetch geo classes
+  const fetchGeoClasses = async () => {
+    const response = await getGeoClasses();
+    if(! response || ! response.results) {
+      return;
+    }
+    // Store geoClasses in local store
+    dispatch(setGeoClasses(response.results.bindings))
   }
 
   // Fetch attributes for a specific FysicalObject class
@@ -118,8 +131,8 @@ const EditObject = () => {
 
   // Function that runs if component loads
   useEffect(() => {
-    fetchFysicalObjects()
-    getGeoClasses();
+    fetchFysicalObjects();
+    fetchGeoClasses();
   }, [])
 
   // Function that runs if component loads
@@ -127,6 +140,8 @@ const EditObject = () => {
     const geometryClickedCallback = async (e: any) => {
       // Get clicked object data
       const object = getObject(null, e.detail.uuid);
+      // If no object info was found: stop executing
+      if(! object) return;
       // Make edit form visible
       setIsFormVisible(true);
       // Set this UUID as active UUID
@@ -136,7 +151,11 @@ const EditObject = () => {
       const input_objectType = div_objectType.getElementsByClassName("react-datalist-input__textbox")[0];
       input_objectType?.setAttribute('placeholder', object.label);
       // Update 'objectType' state variable
-      setSelectedObjectType({ label: object.uri, id: object.label });
+      setSelectedObjectType({
+        label: object.uri,
+        id: object.label,
+        type: object.type
+      });
       // Add geometry (marker or polygon) to state
       // But only if it's unedited
       if(object.geometry) {
@@ -200,7 +219,8 @@ const EditObject = () => {
       ret.push({
         id: objects[x]['label'].value,
         value: objects[x]['label'].value,
-        label: objects[x]['classURI'].value
+        label: objects[x]['classURI'].value,
+        type: objects[x]['subClassOf'].value
       });
     }
     return ret;
@@ -209,6 +229,7 @@ const EditObject = () => {
   const resetFormState = () => {
     setAttributes([])
     setLocationOnMap([])
+    setGeometry(null)
     setSelectedObjectType(false);
     setActiveUuid(false)
     // Clear form
@@ -276,6 +297,27 @@ const EditObject = () => {
     return true;
   }
 
+  // Get geo type (point/polygon) of objects parent classUri
+  const getGeoClass = (objectType: URL): boolean | string => {
+    // Filter geoClasses on objectType
+    const foundGeoClass = geoClasses.filter(x => {
+      return x.classURI.value === objectType;
+    })
+    // Return 'point' if no geoClass was found
+    if(foundGeoClass.length === 0) {
+      return 'point';
+    }
+    // Return geoClass if found
+    if(foundGeoClass[0].geoKlasseLabel.value === 'GM_Point') {
+      return 'point';
+    }
+    else if(foundGeoClass[0].geoKlasseLabel.value === 'GM_Surface') {
+      return 'polygon';
+    } else {
+      return 'point';
+    }
+  }
+
   const showAttributes = selectedObjectType && geometry && geometry.inputs;
 
   // If physical objects did not load: Show loading text
@@ -325,13 +367,15 @@ const EditObject = () => {
             id="objectType"
             onSelect={(item) => {
               setSelectedObjectType(item)
-              
-              const geotype = 'point';
+
+              // Get geoClass (point/polygon)
+              const geoClass = getGeoClass(item.type);
+
               if(! geometry || ! geometry.inputs) {
                 let event = (
-                  ! geotype
-                    ? new Event("enableDrawing")
-                    : new Event("addDraggableMarker")
+                  geoClass === 'point'
+                    ? new Event("addDraggableMarker")
+                    : new Event("enableDrawing")
                 )
                 window.dispatchEvent(event);
               }

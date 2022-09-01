@@ -42,11 +42,7 @@ const Map = () => {
 
     // Init map draw
     const draw = new MapboxDraw({
-      displayControlsDefault: false,
-      controls: {
-        polygon: true,
-        trash: true
-      },
+      displayControlsDefault: false
     });
     map.addControl(draw);
 

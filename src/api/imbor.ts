@@ -7,6 +7,7 @@ import {query as geoClassesQuery} from '../queries/geoklasse.rq.js';
 const doRequest = async (url: string) => {
   let fetchOptions = {
     headers: {
+      "Content-Type": 'application/sparql-query',
       "authorization": `Basic ${process.env.REACT_APP_IMBOR_TOKEN}`
     }
   }
@@ -22,10 +23,10 @@ export const getKern = async (query: string) => {
   return await doRequest(`${url}?query=${query}`);
 }
 
-// getInformatief :: string -> json
-export const getInformatief = async (query: string) => {
-  const url = config.imbor.informatief;
-  return await doRequest(`${url}?query=${query}`);
+// getKernInformatief :: string -> json
+export const getKernInformatief = async (query: string) => {
+  const url = config.imbor['kern_informatief'];
+  return await doRequest(`${url}&query=${query}`);
 }
 
 export const getFysicalObjects = async (): Promise<any> => {
@@ -43,7 +44,7 @@ export const getGeoClasses = async (): Promise<any> => {
   const query = geoClassesQuery();
 
   try{
-    const response: {[index: string]: any} = await getInformatief(encodeURIComponent(query));
+    const response: {[index: string]: any} = await getKernInformatief(encodeURIComponent(query));
     return response;
   } catch (error) {
     return null;
