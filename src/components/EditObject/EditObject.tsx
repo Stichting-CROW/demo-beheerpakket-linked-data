@@ -15,7 +15,7 @@ import {
 
 // Import components
 import Button from '../Button';
-import FormLabel from '../FormLabel/FormLabel.jsx';
+import FormLabel from '../FormLabel/FormLabel';
 import FormInput from '../FormInput/FormInput.jsx';
 
 // Import helper functions
@@ -63,15 +63,16 @@ const Attributes = ({data}) => {
           data-name="attribute"
           title={triple['entry_definition'] ? triple['entry_definition'].value : ''}
         >
-          <FormLabel id={id} title={triple['entry_text'].value}>
+          <FormLabel
+            id={id}
+            label={triple['entry_text'].value}
+            infoText={triple['entry_definition'] ? triple['entry_definition'].value : ''}
+            >
             <FormInput
               id={id}
               type="text"
               name={triple['entry_text'].value}
             />
-            <small>
-              {triple['entry_definition'] ? triple['entry_definition'].value : ''}
-            </small>
           </FormLabel>
         </div>
       })}

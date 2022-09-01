@@ -4,6 +4,11 @@
 }
 
 .FormLabel .label {
-  display: inline-block;
-  margin:  15px 0;
+  display: flex;
+  margin:  15px 0 5px 0;
+  justify-content: space-between;
+}
+
+.FormLabel .infoText {
+  cursor: pointer;
 }
