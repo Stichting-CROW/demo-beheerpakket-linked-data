@@ -9,11 +9,11 @@ export const query = (classUri) => `
   SELECT
     ?entry_iri ?entry_text ?entry_definition ?group_iri
   WHERE {
-     	?group_iri sh:property/sh:path ?entry_iri .
-      OPTIONAL { ?entry_iri skos:prefLabel ?entry_text . }
-      OPTIONAL { ?entry_iri skos:definition ?entry_definition . }
-      OPTIONAL { ?entry_iri nen2660:hasQuantityKind/skos:prefLabel ?attributQuantityKind . }
-    
-    	<${classUri}> rdfs:subClassOf* ?group_iri .
+   	?group_iri sh:property/sh:path ?entry_iri .
+    OPTIONAL { ?entry_iri skos:prefLabel ?entry_text . }
+    OPTIONAL { ?entry_iri skos:definition ?entry_definition . }
+    OPTIONAL { ?entry_iri nen2660:hasQuantityKind/skos:prefLabel ?attributQuantityKind . }
+  
+  	<${classUri}> rdfs:subClassOf* ?group_iri .
   }
 `

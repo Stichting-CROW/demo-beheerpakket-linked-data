@@ -14,11 +14,11 @@ export class AttributeRelationValue<T extends Literal | URL> {
   uri: string;
   // Verwijst  naar IMBOR (of andere ontologie), wel stabiel
   type: URL;
-  /** Bij relaties een URL, bij attributen een Literal */
+  // Bij relaties een URL, bij attributen een Literal
   value: T;
   // Label van type (bijvoorbeeld "snoeifrequentie")
   label?: string;
-  /** Misschien niet nodig? t.b.v. datums die als strings worden geserialiseerd */
+  // Misschien niet nodig? t.b.v. datums die als strings worden geserialiseerd
   jsType?: string;
 }
 
@@ -37,6 +37,6 @@ export type Object = {
   attributes?: AttributeRelationValue<Literal>[];
   // Lijst van relaties, zoals nen2660:hasPart.
   relations?: AttributeRelationValue<URL>[];
-  // Lijst van annotaties, voor bijvoorbeeld skos:prefLabel en skos:description.
+  // Lijst van annotaties, voor bijvoorbeeld skos:prefLabel en skos:description
   annotations?: AttributeRelationValue<Literal>[];
 }
