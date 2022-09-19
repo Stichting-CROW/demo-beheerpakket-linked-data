@@ -1,6 +1,6 @@
 .Button {
   cursor: pointer;
-  display: block;
+  display: inline-block;
   padding: 12px 18px;
   gap: 10px;
   background-color: #58D67B;
@@ -19,4 +19,13 @@
 
 .Button:hover {
   opacity: 0.8;
+}
+
+.Button.Button-white {
+  background: #fff;
+  color: #404040;
+}
+
+.Button.margin-left {
+  margin-left: 16px;
 }

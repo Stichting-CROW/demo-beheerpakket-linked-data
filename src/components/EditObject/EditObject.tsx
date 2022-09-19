@@ -42,6 +42,7 @@ import {
 } from './editObjectSlice';
 
 import '../MapTools.css'
+import './EditObject.css'
 
 interface ImborResponse {
   head: object,
@@ -331,8 +332,18 @@ const EditObject = () => {
 
   return (
     <>
+      {showAttributes && (
+        <Button onClick={(e) => {
+          e.preventDefault();
+          handleSubmit();
+        }}
+        >
+          Opslaan
+        </Button>
+      )}
+
       <Button
-        classes=""
+        classes={`Button-white ${(isFormVisible && locationOnMap && locationOnMap.length >= 2) ? 'margin-left' : ''}`}
         onClick={() => {
           setIsFormVisible(! isFormVisible);
           resetFormState();
@@ -340,19 +351,6 @@ const EditObject = () => {
         >
         {isFormVisible ? 'Annuleer' : 'Object toevoegen'}
       </Button>
-
-      {showAttributes && (
-        <div style={{margin: '15px 0'}}>
-          <Button onClick={(e) => {
-            e.preventDefault();
-            handleSubmit();
-          }}
-          classes=""
-          >
-            Opslaan
-          </Button>
-        </div>
-      )}
 
       <div
         className="InfoBox"
@@ -383,8 +381,8 @@ const EditObject = () => {
             items={prepareForDataList(physicalObjects)}
           />
 
-          {selectedObjectType && (! locationOnMap || locationOnMap.length < 2) && ! activeUuid && <p>
-            <b>Plaats het object op de kaart door de marker te verplaatsen.</b>
+          {selectedObjectType && (! locationOnMap || locationOnMap.length < 2) && ! activeUuid && <p className="EditObject-note">
+            Verplaats de marker op de kaart om een object toe te voegen.
           </p>}
 
           {showAttributes && <div style={{margin: '15px 0'}}>

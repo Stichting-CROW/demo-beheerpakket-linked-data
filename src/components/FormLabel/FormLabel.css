@@ -1,11 +1,11 @@
 .FormLabel {
-  margin: 15px 0;
+  margin: 20px 0;
   display: block;
 }
 
 .FormLabel .label {
   display: flex;
-  margin:  15px 0 5px 0;
+  margin:  20px 0 0px 0;
   justify-content: space-between;
 }
 

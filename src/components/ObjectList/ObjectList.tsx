@@ -102,7 +102,7 @@ const ObjectList = () => {
   return (
     <div className="ObjectList">
 
-      <h2>
+      <h2 className="heading-2">
         Objectenlijst
       </h2>
 

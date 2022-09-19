@@ -15,12 +15,12 @@ const FormLabel = ({
 }: FormLabelProps) => {
   return (
     <label htmlFor={id} className="FormLabel">
-      <b className="label">
+      <span className="label">
         {label}
         {infoText && <span className="infoText">
           ℹ️
         </span>}
-      </b>
+      </span>
       <div>
         {children}
       </div>

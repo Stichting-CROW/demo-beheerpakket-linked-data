@@ -33,3 +33,11 @@ a {
 .flex {
   display: flex;
 }
+
+.heading-2 {
+  border-bottom: 1px solid #5974FF;
+  font-weight: 600;
+  display: inline-block;
+  font-size: 20px;
+  line-height: 23px;
+}
