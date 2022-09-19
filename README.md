@@ -1,68 +1,119 @@
-# demo-beheerpakket-linked-data
+# Demo Beheerpakket Linked Data
 
-Voorbeeldimplementatie van software die werkt op basis van NEN 2660-2:2022
+Voorbeeldimplementatie van software die werkt op basis van NEN 2660-2:2022.
 
-# IMBOR resources
+## Introductie
 
-For querying IMBOR we use the following resources:
+[CROW](https://www.crow.nl/) is de initiator van dit project. De insteek was:
 
+> "Maak een **Proof of Concept** dat aantoont dat het gemakkelijk is om een **beheerpakket** te maken voor het beheren van op **NEN2660-2** gebaseerde ontologieen.
+
+Oftewel:
+
+- Een (areaal)beheerpakket
+- Voor het beheren van objecten + attributen
+- Gebruik van NEN2660-2 LinkedData ontologie
+- Eenvoudige uitwerking: Proof of Concept
+
+## Over IMBOR
+
+CROW beheert het **[IMBOR](https://www.crow.nl/imbor)**.
+
+Het IMBOR uniformeert begrippen voor het vakgebied 'beheer openbare ruimte'.
+
+## Over NEN2660-2
+
+De **[NEN2660-2](https://docs.crow.nl/imbor/techdoc/#imbor-door-ontwikkeling-in-software)** standaardiseert het maken van ontologieën: informatie rondom de gebouwde omgeving kan hiermee worden vastgelegd en gedeeld.
+
+## Voordelen gebruik NEN2660-2
+
+**Nu:** elk softwarepakket maakt een systeem voor het vastleggen van een 'Boom' of 'Afvalbak'.
+
+**Toekomst:** softwarepakket legt geen 'Boom' meer vast, maar enkel nog klassen uit de NEN2660-2.
+
+**Voordelen:**
+- Automatisch de actuele lijst van objecten en attributen:<br />softwarepakket wordt gevuld met de IMBOR-ontologie
+- Minder werk, minder opslag nodig
+- Software minder vaak aanpassen
+
+## Demo
+
+&raquo; [**Bekijk de demo**](https://docs.crow.nl/demo-beheerpakket-linked-data/)
+
+## Screenshots
+
+Kaart met alle objecten:
+
+![Kaart](https://i.imgur.com/2xGID7i.png)
+
+Voeg een nieuw objecttype toe:
+
+![Selecteer objecttype](https://i.imgur.com/p6MtWcf.png)
+
+Vul de attributen in:
+
+![Attributen](https://i.imgur.com/KVh6d9J.png)
+
+## De applicatie gebruiken als ontwikkelaar
+
+Deze sectie geeft informatie over het op je computer starten van de applicatie. Als je de applicatie wilt zien en testen kun je ook gebruik maken van de online versie op [docs.crow.nl/demo-beheerpakket-linked-data](https://docs.crow.nl/demo-beheerpakket-linked-data/).
+
+### Benodigdheden
+
+Clone de repository:
+
+    git clone https://github.com/Stichting-CROW/demo-beheerpakket-linked-data.git
+    cd demo-beheerpakket-linked-data
+
+Stel de API token in:
+
+- Dupliceer `.env.example` en geef dit duplicaat de bestandsnaam `.env`
+- Configureer de `REACT_APP_IMBOR_TOKEN` variabele
+
+### Beschikbare scripts
+
+#### `npm install`
+
+Installeert alle afhankelijkheden. Dit is verplicht voordat je de applicatie voor de eerste keer start.
+
+#### `npm start`
+
+Start de app in ontwikkelingsmodus.
+
+Als je naar [http://localhost:3000](http://localhost:3000) gaat zie je de webapplicatie in je browser.
+
+De site herlaadt automatisch als je wijzigingen in de code aanbrengt.
+
+#### `npm run deploy`
+
+Plaatst een nieuwe versie online.
+
+De applicatie zal worden gebouwd en geupload naar GitHub Pages. De online geplaatste applicatie verschijnt op [docs.crow.nl/demo-beheerpakket-linked-data](https://docs.crow.nl/demo-beheerpakket-linked-data).
+
+## Meer leren?
+
+Dit project is gemaakt met [Create React App](https://github.com/facebook/create-react-app).
+- [Create React App documentatie](https://facebook.github.io/create-react-app/docs/getting-started).
+- [React documentatie](https://reactjs.org/).
+
+Voor het bevragen van de triple store gebruiken we SPARQL.
+- [SPARQL By Example](https://www.w3.org/2009/Talks/0615-qbe/)
+
+Voor het bevragen van IMBOR kunnen we de volgende bronnen gebruiken:
 - https://hub.laces.tech/crow/imbor/2022/p/vocabulaire
 - https://hub.laces.tech/crow/imbor/2022/p/kern
 - https://hub.laces.tech/crow/imbor/2022/p/domeinwaarden
 - https://hub.laces.tech/crow/imbor/2022/p/informatief
 - https://hub.laces.tech/crow/imbor/2022/p/aanvullend-metamodel
 
-Read the docs on how to authenticate and query for the Laces Hub: https://docs.laces.tech/hub/9.0.8/security.html#authentication
+Documentatie over hoe te authenticeren op de Laces Hub:
+- [Laces Hub authentication](https://docs.laces.tech/hub/9.0.8/security.html#authentication)
 
-To browse through the onto, check:
+De IMBOR ontologie verkennen:
+- [IMBOR Onto Verkenner](https://docs.crow.nl/onto-verkenner/imbor/#/view)
 
-- https://docs.crow.nl/onto-verkenner/imbor/#/view
+## Note to self
 
-# Running this app
+### GitHub Pages: y is not defined
 
-## Prerequisites
-
-- Duplicate `.env.example` to `.env`
-- Configure the `REACT_APP_IMBOR_TOKEN` variable
-
-## Available Scripts
-
-### `npm install`
-
-Installs all dependencies.
-
-### `npm start`
-
-Runs the app in the development mode. Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits. You will also see any lint errors in the console.
-
-## How to deploy?
-
-If you run
-
-    npm run deploy
-
-the updated app will be deployed to GitHub pages. You can then view the app at ...
-
-## Learn More
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-To learn SPARQL, check https://www.w3.org/2009/Talks/0615-qbe/ 
-
-# Libraries
-
-In this demo app we use the following libraries:
-
-- https://github.com/andrelandgraf/react-datalist-input
-
-# Problems solved
-
-## GitHub pages sais: y is not defined
-
-Solved problem like this: https://github.com/alex3165/react-mapbox-gl/issues/931#issuecomment-826135957
+Er was het probleem dat GitHub Pages een foutmelding gaf: `y is not defined`. Dit is opgelost met [deze oplossing](https://github.com/alex3165/react-mapbox-gl/issues/931#issuecomment-826135957).
