@@ -33,7 +33,7 @@
   opacity: 0;
 }
 .InfoButton-content.visible {
-  margin: 6px 0;
+  margin: 6px 0 22px 0;
   padding: 20px;
   height: auto;
   max-height: 1000px;

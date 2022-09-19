@@ -117,8 +117,6 @@ const Map = () => {
       // Add this marker to the allMarkers variable
       setAllMarkers([...allMarkers, marker]);
     
-      console.log('Add activeMarker', theMap, lng, lat)
-
       marker.on('dragend', onDragEnd);
       marker.on('ondblclick', () => {marker.remove()});
     }
