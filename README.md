@@ -60,3 +60,9 @@ To learn SPARQL, check https://www.w3.org/2009/Talks/0615-qbe/
 In this demo app we use the following libraries:
 
 - https://github.com/andrelandgraf/react-datalist-input
+
+# Problems solved
+
+## GitHub pages sais: y is not defined
+
+Solved problem like this: https://github.com/alex3165/react-mapbox-gl/issues/931#issuecomment-826135957
