@@ -97,7 +97,7 @@ const Map = () => {
       // Create a DOM element for the marker (custom image)
       var el = document.createElement('div');
       el.className = 'marker';
-      el.style.backgroundImage = `url('${process.env.PUBLIC_URL}/components/Map/marker-new.png')`
+      el.style.backgroundImage = `url('${process.env.PUBLIC_URL}/components/Map/icon-marker-green.svg')`
       el.style.backgroundRepeat = 'no-repeat'
       el.style.backgroundSize = 'contain'
       el.style.width = '50px';
@@ -204,8 +204,18 @@ const Map = () => {
     if(! uuid) return;
     if(! geometry || ! geometry.inputs) return;
 
+
+    // Create a DOM element for the marker (custom image)
+    var el = document.createElement('div');
+    el.className = 'marker';
+    el.style.backgroundImage = `url('${process.env.PUBLIC_URL}/components/Map/icon-marker.svg')`
+    el.style.backgroundRepeat = 'no-repeat'
+    el.style.backgroundSize = 'contain'
+    el.style.width = '50px';
+    el.style.height = '50px';
+
     // Create marker
-    const marker = new maplibregl.Marker({
+    const marker = new maplibregl.Marker(el, {
       draggable: false
     })
     .setLngLat([geometry.inputs[0], geometry.inputs[1]])
