@@ -17,7 +17,6 @@ const FormLabel = ({
   infoText
 }: FormLabelProps) => {
   const [isContentVisible, setIsContentVisible] = useState(false);
-  console.log('isContentVisible', isContentVisible)
 
   return (
     <label htmlFor={id} className="FormLabel">

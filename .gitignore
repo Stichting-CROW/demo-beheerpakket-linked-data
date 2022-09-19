@@ -24,3 +24,6 @@ yarn-error.log*
 
 # private config
 .env
+
+# font directory
+public/font/

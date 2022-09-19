@@ -342,7 +342,7 @@ const EditObject = () => {
       )}
 
       <Button
-        classes={`${isFormVisible ? 'Button-white' : ''} ${(isFormVisible && locationOnMap && locationOnMap.length >= 2) ? 'margin-left' : ''}`}
+        classes={`${isFormVisible ? 'Button-white' : ''} ${(isFormVisible && locationOnMap && locationOnMap.length >= 1) ? 'margin-left' : ''}`}
         onClick={() => {
           setIsFormVisible(! isFormVisible);
           resetFormState();
@@ -380,7 +380,7 @@ const EditObject = () => {
             items={prepareForDataList(physicalObjects)}
           />
 
-          {selectedObjectType && (! locationOnMap || locationOnMap.length < 2) && ! activeUuid && <p className="EditObject-note">
+          {selectedObjectType && (! locationOnMap || locationOnMap.length < 1) && ! activeUuid && <p className="EditObject-note">
             Verplaats de marker op de kaart om een object toe te voegen.
           </p>}
 

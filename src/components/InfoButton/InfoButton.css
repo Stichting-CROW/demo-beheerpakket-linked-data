@@ -19,7 +19,7 @@
 
 .InfoButton-content {
   width: 100%;
-  margin: 6px 0;
+  margin: 0 0;
   background: #FFFFFF;
   border-radius: 5px;
   padding: 0 20px;
@@ -29,13 +29,14 @@
   max-height: 0;
   overflow: hidden;
   /*transition: max-height 0.4s 0.2s ease-out, padding 0.6s ease-in-out, opacity 1s;*/
-  transition: max-height 0.1s 0.1s ease-out, padding 0.2s ease-out, opacity 0.2s;
+  transition: max-height 0.1s 0.1s ease-out, padding 0.2s ease-out, margin 0.2s ease-out, opacity 0.2s;
   opacity: 0;
 }
 .InfoButton-content.visible {
+  margin: 6px 0;
   padding: 20px;
   height: auto;
   max-height: 1000px;
   opacity: 1;
-  transition: max-height 0.2s 0.1s ease-out, padding 0.3s ease-in-out, opacity 1s;
+  transition: max-height 0.2s 0.1s ease-out, padding 0.3s ease-in-out, margin 0.3s ease-in-out, opacity 0.6s;
 }
