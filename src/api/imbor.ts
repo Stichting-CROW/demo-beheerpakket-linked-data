@@ -1,6 +1,6 @@
 import {config} from '../config'
 import {query as attributesQuery} from '../queries/nen2660-attributes.rq.js';
-import {query as physicalObjectsQuery} from '../queries/nen2660-attributes.rq.js';
+import {query as physicalObjectsQuery} from '../queries/nen2660-PhysicalObjects.rq.js';
 import {query as geoClassesQuery} from '../queries/geoklasse.rq.js';
 
 // doRequest :: string -> json

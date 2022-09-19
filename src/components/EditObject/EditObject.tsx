@@ -220,7 +220,7 @@ const EditObject = () => {
         id: objects[x]['label'].value,
         value: objects[x]['label'].value,
         label: objects[x]['classURI'].value,
-        type: objects[x]['subClassOf'].value
+        type: objects[x]['subClassOf'] ? objects[x]['subClassOf'].value : ''
       });
     }
     return ret;
