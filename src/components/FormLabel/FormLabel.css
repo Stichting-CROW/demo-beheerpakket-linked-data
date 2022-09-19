@@ -3,12 +3,14 @@
   display: block;
 }
 
-.FormLabel .label {
+.FormLabel-label-wrapper {
   display: flex;
   margin:  20px 0 0px 0;
   justify-content: space-between;
+  height: 32px;
 }
-
-.FormLabel .infoText {
-  cursor: pointer;
+.FormLabel-label {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }

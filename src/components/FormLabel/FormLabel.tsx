@@ -1,3 +1,6 @@
+import {useState} from 'react';
+import {InfoButton, InfoContent} from '../InfoButton/InfoButton';
+
 import './FormLabel.css';
 
 interface FormLabelProps {
@@ -13,14 +16,22 @@ const FormLabel = ({
   children,
   infoText
 }: FormLabelProps) => {
+  const [isContentVisible, setIsContentVisible] = useState(false);
+  console.log('isContentVisible', isContentVisible)
+
   return (
     <label htmlFor={id} className="FormLabel">
-      <span className="label">
-        {label}
-        {infoText && <span className="infoText">
-          ℹ️
-        </span>}
+      <span className="FormLabel-label-wrapper">
+        <span className="FormLabel-label">
+          {label}
+        </span>
+        {infoText && <InfoButton isActive={isContentVisible} onClick={() => {
+          setIsContentVisible(! isContentVisible)
+        }} />}
       </span>
+      <InfoContent isVisible={isContentVisible}>
+        {infoText}
+      </InfoContent>
       <div>
         {children}
       </div>

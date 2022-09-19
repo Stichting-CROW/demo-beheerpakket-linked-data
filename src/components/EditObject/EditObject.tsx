@@ -64,7 +64,6 @@ const Attributes = ({data}) => {
         return <div
           key={id}
           data-name="attribute"
-          title={triple['entry_definition'] ? triple['entry_definition'].value : ''}
         >
           <FormLabel
             id={id}
@@ -343,7 +342,7 @@ const EditObject = () => {
       )}
 
       <Button
-        classes={`Button-white ${(isFormVisible && locationOnMap && locationOnMap.length >= 2) ? 'margin-left' : ''}`}
+        classes={`${isFormVisible ? 'Button-white' : ''} ${(isFormVisible && locationOnMap && locationOnMap.length >= 2) ? 'margin-left' : ''}`}
         onClick={() => {
           setIsFormVisible(! isFormVisible);
           resetFormState();
