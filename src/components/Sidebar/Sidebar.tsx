@@ -13,13 +13,23 @@ const Sidebar = () => {
   return (
     <div className="Sidebar" id="js-Sidebar">
 
-      <h1>
-        IMBOR demo app
-      </h1>
+      <div className="flex">
+        <h1>
+          <span>
+            IMBOR
+          </span>
+          &nbsp;
+          <small>
+            demo app
+          </small>
+        </h1>
+      </div>
 
-      <p>
-        Met deze app is het mogelijk om objecten te plaatsen op de kaart. De objecten worden opgehaald uit een Linked Data database. <a href="https://github.com/Stichting-CROW/demo-beheerpakket-linked-data#demo-beheerpakket-linked-data" target="_blank">Lees meer over dit project</a>.
-      </p>
+      <div className="Sidebar-introduction">
+        In deze tool is het mogelijk om objecten te plaatsen op de kaart. De objecten worden opgehaald uit een Linked Data database.
+        <br />
+        <a href="https://github.com/Stichting-CROW/demo-beheerpakket-linked-data#demo-beheerpakket-linked-data" target="_blank">Lees meer...</a>
+      </div>
 
       <MapTools />
 

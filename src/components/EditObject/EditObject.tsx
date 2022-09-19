@@ -332,7 +332,7 @@ const EditObject = () => {
   return (
     <>
       <Button
-        classes="w-full"
+        classes=""
         onClick={() => {
           setIsFormVisible(! isFormVisible);
           resetFormState();
@@ -347,7 +347,7 @@ const EditObject = () => {
             e.preventDefault();
             handleSubmit();
           }}
-          classes="w-full"
+          classes=""
           >
             Opslaan
           </Button>
