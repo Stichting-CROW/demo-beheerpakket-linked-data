@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/demo-beheerpakket-linked-data/static/css/main.951cc28f.css",
-    "main.js": "/demo-beheerpakket-linked-data/static/js/main.191e9732.js",
+    "main.js": "/demo-beheerpakket-linked-data/static/js/main.530282d5.js",
     "static/js/787.28cb0dcd.chunk.js": "/demo-beheerpakket-linked-data/static/js/787.28cb0dcd.chunk.js",
     "static/media/icon-trash-blue.svg": "/demo-beheerpakket-linked-data/static/media/icon-trash-blue.7885a0acd90998487a2c.svg",
     "static/media/icon-trash.svg": "/demo-beheerpakket-linked-data/static/media/icon-trash.466c0e475b7eea4775be.svg",
@@ -12,11 +12,11 @@
     "static/media/icon-info-blue.svg": "/demo-beheerpakket-linked-data/static/media/icon-info-blue.6c40fd87f0464df4df8a.svg",
     "static/media/icon-info.svg": "/demo-beheerpakket-linked-data/static/media/icon-info.2a1bfd172abd8ad60534.svg",
     "main.951cc28f.css.map": "/demo-beheerpakket-linked-data/static/css/main.951cc28f.css.map",
-    "main.191e9732.js.map": "/demo-beheerpakket-linked-data/static/js/main.191e9732.js.map",
+    "main.530282d5.js.map": "/demo-beheerpakket-linked-data/static/js/main.530282d5.js.map",
     "787.28cb0dcd.chunk.js.map": "/demo-beheerpakket-linked-data/static/js/787.28cb0dcd.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.951cc28f.css",
-    "static/js/main.191e9732.js"
+    "static/js/main.530282d5.js"
   ]
 }
