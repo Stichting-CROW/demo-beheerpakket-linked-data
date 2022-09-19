@@ -1,6 +1,5 @@
-
 import {useState, useEffect, useRef} from 'react';
-// import Button from './Button';
+import Modal from '../Modal/Modal';
 
 // Import helper functions
 import {
@@ -31,6 +30,8 @@ const getObjects = () => {
 }
 
 const ObjectRow = ({data}) => {
+  const [showModal, setShowModal] = useState(false);
+
   const openObjectDetails = (e) => {
     // Click marker
     const myEvent = new CustomEvent("markerClicked", {
@@ -43,20 +44,16 @@ const ObjectRow = ({data}) => {
     var sidebar = document.getElementById('js-Sidebar');
     sidebar.scrollTop = 0;
   };
-  const deleteObjectHandler = (e) => {
-    e.preventDefault();
-
-    // Ask for confirmation
-    if(! window.confirm(`Weet je zeker dat je object "${data.label}" wilt verwijderen?`)) {
-      return;
-    }
-
+  const deleteObjectHandler = () => {
     // Delete object from localStorage
     deleteObject(data.uuid);
 
     // Reload data
     const myEvent = new CustomEvent("fysicalObjectsUpdated");
     window.dispatchEvent(myEvent);
+
+    // Hide modal
+    setShowModal(false);
   }
 
   // Get object from store
@@ -66,12 +63,23 @@ const ObjectRow = ({data}) => {
 
   return (
     <div className="ObjectRow">
+
       <a onClick={openObjectDetails} className="ObjectRow-title">
         {identificatie}
       </a>
-      <a onClick={deleteObjectHandler} className="ObjectRow-delete">
+      <a onClick={() => {
+        setShowModal(true);
+      }} className="ObjectRow-delete">
         X
       </a>
+
+      {showModal && <Modal
+        primaryButtonHandler={deleteObjectHandler}
+        secundaryButtonHandler={() => setShowModal(false)}
+      >
+        Weet je zeker dat je object <b>{data.label}</b> wilt verwijderen?
+      </Modal>}
+
     </div>
   )
 }

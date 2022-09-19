@@ -1,7 +1,11 @@
  /* Import Google Font:  Work Sans */
  @import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;600;700&display=block');
 
- body {
+* {
+  box-sizing: border-box;
+}
+
+body {
   margin: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -33,6 +37,10 @@ h1, h2, h3, h4, h5, h6 {
 
 a {
   color: #434190;
+}
+ 
+b {
+  font-weight: 600;
 }
 
 .w-full {

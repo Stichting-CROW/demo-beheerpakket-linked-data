@@ -356,7 +356,7 @@ const EditObject = () => {
         style={{display: isFormVisible ? 'block' : 'none'}}
       >
 
-        <form className="EditObject" id="js-editObjectForm">
+        <form className="EditObject" id="js-editObjectForm" onSubmit={(e) => {e.preventDefault()}}>
 
           <DatalistInput
             placeholder="Objecttype"

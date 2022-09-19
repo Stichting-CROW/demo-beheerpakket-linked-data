@@ -15,14 +15,26 @@
   font-size: 18px;
   line-height: 21px;
   border: none;
+  transition: opacity 0.15s, transform 0.15s;
 }
 
 .Button:hover {
   opacity: 0.8;
+  transform: scale(1.05);
 }
 
 .Button.Button-white {
   background: #fff;
+  color: #404040;
+}
+
+.Button.Button-gray {
+  background: #F7F3EE;
+  color: #404040;
+}
+
+.Button.Button-orange {
+  background: #FFA959;
   color: #404040;
 }
 
