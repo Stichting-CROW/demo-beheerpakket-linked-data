@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Import Google Font:  Work Sans */
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;600;700&display=block');
+
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
@@ -30,4 +33,59 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+
+body {
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-family: 'Work Sans', sans-serif;
+  color: #040034;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 21px;
+}
+input {
+  font-family: 'Work Sans', sans-serif;
+  font-size: 16px;
+  line-height: 19px;
+  color: #404040;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 15px 0;
+}
+
+a {
+  color: #434190;
+}
+ 
+b {
+  font-weight: 600;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.flex {
+  display: flex;
+}
+
+.heading-2 {
+  border-bottom: 1px solid #5974FF;
+  font-weight: 600;
+  display: inline-block;
+  font-size: 20px;
+  line-height: 23px;
 }

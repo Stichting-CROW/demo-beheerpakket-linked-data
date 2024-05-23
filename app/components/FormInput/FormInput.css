@@ -1,0 +1,10 @@
+.FormInput {
+  margin: 4px 0 10px 0;
+  padding: 10px 16px;
+  gap: 10px;
+  width: 100%;
+  height: 40px;
+  background: #FFFFFF;
+  border: 1px solid #C0BBB2;
+  border-radius: 5px;
+}

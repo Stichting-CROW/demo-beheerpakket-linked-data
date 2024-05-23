@@ -1,0 +1,25 @@
+.map {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+}
+
+.mapboxgl-popup-content,
+.maplibregl-popup-content {
+  background: #FFFFFF;
+  border-radius: 5px;
+  font-size: 16px;
+  padding: 20px 20px;
+  display: block;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 21px;
+  text-align: center;
+}
+
+.maplibregl-popup-close-button {
+  display: none;
+}

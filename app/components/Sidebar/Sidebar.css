@@ -1,0 +1,40 @@
+.Sidebar {
+  position: relative;
+  z-index: 1;
+  background: #F7F3EE;
+  width: 320px;
+  height: 100%;
+  padding: 0 1rem;
+  overflow: scroll;
+}
+
+.Sidebar h1 {
+  display: flex;
+  vertical-align: baseline;
+  font-weight: 700;
+  font-size: 42px;
+  line-height: 49px;
+  width: 100%;
+  justify-content: space-between;
+}
+.Sidebar h1 span {
+  border-bottom: 2px solid #5974FF;
+}
+.Sidebar h1 small {
+  display: flex;
+  justify-content: flex-end;
+  flex-direction: column;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 32px;  
+}
+
+.Sidebar-introduction {
+  background: #FFFFFF;
+  border-radius: 5px;
+  padding: 15px;
+}
+.Sidebar-introduction a {
+  color: #A3A3A3;
+  text-decoration: underline;
+}

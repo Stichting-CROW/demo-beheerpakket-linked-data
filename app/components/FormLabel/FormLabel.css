@@ -1,0 +1,16 @@
+.FormLabel {
+  margin: 10px 0;
+  display: block;
+}
+
+.FormLabel-label-wrapper {
+  display: flex;
+  margin:  20px 0 0px 0;
+  justify-content: space-between;
+  height: 32px;
+}
+.FormLabel-label {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}

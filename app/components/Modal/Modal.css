@@ -1,0 +1,13 @@
+.Modal {
+  position: fixed;
+  width: 312px;
+  min-height: 164px;
+  left: calc(50% - 156px + 160px);/* 312/2 for width, 320/2 for sidebar) */
+  top: 124px;
+  background: #FFFFFF;
+  border-radius: 5px;
+  padding: 32px 24px 24px 24px;
+  text-align: center;
+  color: #040034;
+}
+

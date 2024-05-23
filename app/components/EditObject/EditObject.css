@@ -1,0 +1,23 @@
+#objectType label {
+  margin:  20px 0 0 0;
+  display: inline-block;
+}
+
+.react-datalist-input__textbox {
+  margin: 10px 0 0 0;
+  padding: 10px 16px;
+  gap: 10px;
+  width: 100%;
+  height: 40px;
+  background: #FFFFFF;
+  border: 1px solid #C0BBB2;
+  border-radius: 5px;
+}
+
+.EditObject-note {
+  font-style: italic;
+  font-weight: 400;
+  margin-top: 16px;
+  font-size: 16px;
+  line-height: 19px;
+}

@@ -1,0 +1,47 @@
+.ObjectList {
+  margin-top: 30px;
+}
+
+.ObjectRow {
+  display: flex;
+  margin: 5px 0;
+  padding: 0 0 0 7px;
+  cursor: pointer;
+  background: #FFFFFF;
+  border-radius: 5px;
+}
+.ObjectRow:hover {
+  color: #4c51bf;
+}
+
+.ObjectRow-title {
+  flex: 1;
+  padding: 5px 0;
+  color: #040034;
+  background: url('/components/ObjectList/icon-pencil.svg') no-repeat center right;
+  background-size: 16px;
+}
+.ObjectRow-title::before {
+  content: "";
+  display: "block";
+  background: url('/components/ObjectList/icon-block.svg') no-repeat center left;
+  background-size: 10px;
+  padding-left: 20px;
+}
+.ObjectRow-title:hover {
+  background: url('/components/ObjectList/icon-pencil-blue.svg') no-repeat center right;
+}
+
+.ObjectRow-delete {
+  margin-right: 2px;
+  padding: 5px 0;
+  background: url('/components/ObjectList/icon-trash.svg') no-repeat center center;
+  background-size: 18px;
+  text-indent: -9999px;
+  display: inline-block;
+  width: 30px;
+}
+.ObjectRow-delete:hover {
+  padding-left: 6px;
+  background-image: url('/components/ObjectList/icon-trash-blue.svg');
+}
