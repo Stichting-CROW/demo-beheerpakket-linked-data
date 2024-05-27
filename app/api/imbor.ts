@@ -8,7 +8,7 @@ const doRequest = async (url: string) => {
   let fetchOptions = {
     headers: {
       "Content-Type": 'application/sparql-query',
-      // "authorization": `Basic ${process.env.NEXT_PUBLIC_IMBOR_TOKEN}`
+      "authorization": `Basic ${process.env.NEXT_PUBLIC_IMBOR_TOKEN}`
     }
   }
   const response = await fetch(url, fetchOptions);
@@ -29,11 +29,12 @@ export const getKernInformatief = async (query: string) => {
   return await doRequest(`${url}&query=${query}`);
 }
 
-export const getFysicalObjects = async (): Promise<any> => {
+export const getPhysicalObjects = async (): Promise<any> => {
   const query = physicalObjectsQuery();
 
   try{
     const response: {[index: string]: any} = await getKern(encodeURIComponent(query));
+    console.log('response fysical objects', response);
     return response;
   } catch (error) {
     return null;
@@ -63,4 +64,3 @@ export const getAttributesForClass = async (classUri: string): Promise<any> => {
   }
 
 }
-

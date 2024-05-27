@@ -17,10 +17,10 @@ const makeTriplesObject = (response) => {
   return response.results.bindings;
 }
 
-const getUniquePhysicalObjects = (input) => {
+const getUniquePhysicalObjects = (input: { [x: string]: any; }) => {
   // Only keep unique ones
-  let uniqueUris = [];
-  let uniqueTriples = [];
+  let uniqueUris: any[] = [];
+  let uniqueTriples: any[] = [];
   Object.keys(input).forEach((key) => {
     const triple = input[key];
     if(uniqueUris.indexOf(triple.classURI.value) > -1) {

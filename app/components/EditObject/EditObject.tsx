@@ -21,10 +21,15 @@ import FormInput from '../FormInput/FormInput.jsx';
 // Import helper functions
 import {
   getKern,
-  getFysicalObjects,
   getAttributesForClass,
   getGeoClasses
 } from '../../api/imbor'
+import {
+  getPhysicalObjects
+} from '../../api/common'
+import {
+  getExample
+} from '../../api/gwsw'
 import {
   makeTriple,
   makeTriplesObject,
@@ -100,9 +105,17 @@ const EditObject = () => {
   const geoClasses = useSelector(selectGeoClasses);
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    console.log('ok');
+    (async () => {
+      const example = await getExample();
+      console.log('example', example);
+    })();
+  }, []);
+
   // Fetch fysical objects
-  const fetchFysicalObjects = async () => {
-    const response = await getFysicalObjects()
+  const fetchPhysicalObjects = async () => {
+    const response = await getPhysicalObjects()
     if(! response || ! response.results) {
       return;
     }
@@ -131,7 +144,7 @@ const EditObject = () => {
 
   // Function that runs if component loads
   useEffect(() => {
-    fetchFysicalObjects();
+    fetchPhysicalObjects();
     fetchGeoClasses();
   }, [])
 
