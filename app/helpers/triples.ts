@@ -18,15 +18,15 @@ const makeTriplesObject = (response) => {
 }
 
 const getUniquePhysicalObjects = (input: { [x: string]: any; }) => {
-  // Only keep unique ones
-  let uniqueUris: any[] = [];
+  // Only keep unique ones, remove duplicates
+  let uniqueLabels: any[] = [];
   let uniqueTriples: any[] = [];
   Object.keys(input).forEach((key) => {
     const triple = input[key];
-    if(uniqueUris.indexOf(triple.classURI.value) > -1) {
+    if(uniqueLabels.indexOf(triple.label.value) > -1) {
       return false;
     }
-    uniqueUris.push(triple.classURI.value)
+    uniqueLabels.push(triple.label.value)
     uniqueTriples.push(triple);
   });
 

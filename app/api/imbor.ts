@@ -34,7 +34,6 @@ export const getPhysicalObjects = async (): Promise<any> => {
 
   try{
     const response: {[index: string]: any} = await getKern(encodeURIComponent(query));
-    console.log('response fysical objects', response);
     return response;
   } catch (error) {
     return null;

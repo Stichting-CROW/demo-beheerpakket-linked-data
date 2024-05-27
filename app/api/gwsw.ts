@@ -40,7 +40,6 @@ export const getPhysicalObjects = async (): Promise<any> => {
 
   try{
     const response: {[index: string]: any} = await getGwsw(encodeURIComponent(query));
-    console.log('response fysical objects', response);
     return response;
   } catch (error) {
     return null;

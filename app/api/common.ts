@@ -6,8 +6,16 @@ export const getPhysicalObjects = async () => {
   const gwsw_objects = await getGwswPhysicalObject();
 
   // Merge both objects
-  imbor_objects.merge(gwsw_objects);
+  const merged = {
+    head: imbor_objects.head,
+    results: {
+      bindings: [
+        ...imbor_objects.results.bindings,
+        ...gwsw_objects.results.bindings
+      ]
+    }
+  }
 
   // And return
-  return gwsw_objects;
+  return merged;
 }

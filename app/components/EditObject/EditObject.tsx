@@ -105,14 +105,6 @@ const EditObject = () => {
   const geoClasses = useSelector(selectGeoClasses);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    console.log('ok');
-    (async () => {
-      const example = await getExample();
-      console.log('example', example);
-    })();
-  }, []);
-
   // Fetch fysical objects
   const fetchPhysicalObjects = async () => {
     const response = await getPhysicalObjects()
@@ -120,7 +112,10 @@ const EditObject = () => {
       return;
     }
     const uniqueTriples = getUniquePhysicalObjects(response.results.bindings);
-    dispatch(setPhysicalObjects(uniqueTriples))
+    const sortedTriples = uniqueTriples.sort((a, b) => {
+      return a.label.value > b.label.value ? 1 : -1;
+    });
+    dispatch(setPhysicalObjects(sortedTriples))
   }
 
   // Fetch geo classes
