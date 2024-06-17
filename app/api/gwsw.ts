@@ -1,6 +1,7 @@
 import {config} from '../config'
 import {query as exampleQuery} from '../queries/gwsw-example.js';
 import {query as physicalObjectsQuery} from '../queries/gwsw-PhysicalObjects.rq.js';
+import {query as attributesQuery} from '../queries/nen2660-attributes.rq.js';
 
 // doRequest :: string -> json
 const doRequest = async (url: string, query: string) => {
@@ -44,4 +45,18 @@ export const getPhysicalObjects = async (): Promise<any> => {
   } catch (error) {
     return null;
   }
+}
+
+// Inspiration: https://github.com/Stichting-CROW/ldp-queries/blob/main/src/public/IMBOR2022_Attributen_per_Klasse.rq#L38
+export const getAttributesForClass = async (classUri: string): Promise<any> => {
+  console.log('classUri', classUri)
+  const query = attributesQuery(classUri)
+
+  try {
+    const response: {[index: string]: any} = await getGwsw(encodeURIComponent(query));
+    return response;
+  } catch (error) {
+    return null;
+  }
+
 }

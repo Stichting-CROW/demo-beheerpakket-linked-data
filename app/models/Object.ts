@@ -11,7 +11,7 @@ export type Literal = string | boolean | number | any;
 
 export class AttributeRelationValue<T extends Literal | URL> {
   // URI van attribuut
-  uri: string;
+  uri: string | object;
   // Verwijst  naar IMBOR (of andere ontologie), wel stabiel
   type: URL;
   // Bij relaties een URL, bij attributen een Literal

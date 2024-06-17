@@ -32,7 +32,7 @@ export const getKernInformatief = async (query: string) => {
 export const getPhysicalObjects = async (): Promise<any> => {
   const query = physicalObjectsQuery();
 
-  try{
+  try {
     const response: {[index: string]: any} = await getKern(encodeURIComponent(query));
     return response;
   } catch (error) {
@@ -43,7 +43,7 @@ export const getPhysicalObjects = async (): Promise<any> => {
 export const getGeoClasses = async (): Promise<any> => {
   const query = geoClassesQuery();
 
-  try{
+  try {
     const response: {[index: string]: any} = await getKernInformatief(encodeURIComponent(query));
     return response;
   } catch (error) {
@@ -55,7 +55,7 @@ export const getGeoClasses = async (): Promise<any> => {
 export const getAttributesForClass = async (classUri: string): Promise<any> => {
   const query = attributesQuery(classUri)
 
-  try{
+  try {
     const response: {[index: string]: any} = await getKern(encodeURIComponent(query));
     return response;
   } catch (error) {

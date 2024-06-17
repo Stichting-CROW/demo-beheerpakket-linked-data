@@ -38,9 +38,9 @@ const MapTools = () => {
         </Button>
       </div>
 
-      {(showExportModal || true) && <>
+      {showExportModal && <>
         <Modal
-          primaryButtonHandler={() => {}}
+          primaryButtonHandler={() => setShowExportModal(false)}
           secundaryButtonHandler={() => setShowExportModal(false)}
           style={{
             width: 'calc(100% - 360px)',

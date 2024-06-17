@@ -9,7 +9,7 @@ export const query = () => `
   select
     ?classURI $label
   where {
-      # selecteer klassen die subklasse zijn van RealObject OF SpatialRegion
+      # selecteer klassen die subklasse zijn van FysiekObject
       {?classURI rdfs:subClassOf* gwsw:FysiekObject.}
 
       # Selecteer het label

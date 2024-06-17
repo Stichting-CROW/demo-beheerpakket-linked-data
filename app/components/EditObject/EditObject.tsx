@@ -21,10 +21,10 @@ import FormInput from '../FormInput/FormInput.jsx';
 // Import helper functions
 import {
   getKern,
-  getAttributesForClass,
   getGeoClasses
 } from '../../api/imbor'
 import {
+  getAttributesForClass,
   getPhysicalObjects
 } from '../../api/common'
 import {
@@ -141,7 +141,7 @@ const EditObject = () => {
   useEffect(() => {
     fetchPhysicalObjects();
     fetchGeoClasses();
-  }, [])
+  }, []);
 
   // Function that runs if component loads
   useEffect(() => {
