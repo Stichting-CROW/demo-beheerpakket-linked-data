@@ -3,7 +3,7 @@ import './FormInput.css';
 const FormInput = ({
   id,
   type,
-  name
+  name,
 }) => {
   return (
     <input

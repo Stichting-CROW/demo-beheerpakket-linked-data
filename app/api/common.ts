@@ -4,6 +4,8 @@ import {getPhysicalObjects as getGwswPhysicalObject} from './gwsw';
 import {getAttributesForClass as getImborAttributesForClass} from './imbor';
 import {getAttributesForClass as getGwswAttributesForClass} from './gwsw';
 
+import {getEnumsForAttribute as getImborEnumsForAttribute} from './imbor';
+
 export const getPhysicalObjects = async () => {
   const imbor_objects = await getImborPhysicalObject();
   const gwsw_objects = await getGwswPhysicalObject();
@@ -37,6 +39,16 @@ export const getAttributesForClass = async (classUri: string) => {
       ]
     }
   }
+
+  // And return
+  return merged;
+}
+
+export const getEnumsForAttribute = async (attributeUri: string) => {
+  const imbor_enums = await getImborEnumsForAttribute(attributeUri);
+
+  // Merge both objects
+  const merged = imbor_enums;
 
   // And return
   return merged;

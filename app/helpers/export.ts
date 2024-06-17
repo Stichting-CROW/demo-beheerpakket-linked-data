@@ -36,7 +36,6 @@ export const generateExport = () => {
   // Get physical objects from data store
   const dataStore = getDataStore();
   Object.keys(dataStore).forEach(uuid => {
-    console.log('x', uuid);
     txt += generatePhysicalObject(dataStore[uuid]);
   });
 

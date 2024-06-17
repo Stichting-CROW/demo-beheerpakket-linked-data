@@ -15,8 +15,7 @@ import {
 
 // Import components
 import Button from '../Button';
-import FormLabel from '../FormLabel/FormLabel';
-import FormInput from '../FormInput/FormInput.jsx';
+import Attribute from './Attribute';
 
 // Import helper functions
 import {
@@ -61,28 +60,9 @@ const Attributes = ({data}) => {
 
   return (
     <div data-name="attributes">
-      {data.map(triple => {
-        // Check if attributeLabel exists
-        if(! triple['entry_text'] || ! triple['entry_text'].value) return;
-        // Define ID
-        const id = `js-attribute-input-${triple['entry_text'].value}`;
-        return <div
-          key={id}
-          data-name="attribute"
-        >
-          <FormLabel
-            id={id}
-            label={triple['entry_text'].value}
-            infoText={triple['entry_definition'] ? triple['entry_definition'].value : ''}
-            >
-            <FormInput
-              id={id}
-              type="text"
-              name={triple['entry_text'].value}
-            />
-          </FormLabel>
-        </div>
-      })}
+      {data.map((triple, index) =>
+        <Attribute key={index} data={triple} />
+      )}
     </div>
   )
 }
@@ -177,10 +157,17 @@ const EditObject = () => {
         if(! object.attributes) return;
         object.attributes.forEach(x => {
           if(! x.value) return;
-          const el = document.getElementById(`js-attribute-input-${x.label}`) as HTMLInputElement | null;
-          el?.setAttribute('value', x.value);
-        })
-      }, 100)
+          const el = document.getElementById(`js-attribute-input-${x.label}`) as HTMLInputElement | HTMLSelectElement | null;
+          // If it's a select field:
+          if(el?.options) {
+            el.value = x.value;
+          }
+          // If it's an input field:
+          else {
+            el?.setAttribute('value', x.value);
+          }
+        });
+      }, 1000)
     }
 
     const markerUpdatedCallback = (e: any) => {
@@ -265,7 +252,9 @@ const EditObject = () => {
       if(! x.entry_text) return;
       // Get input value
       const input_field = document.getElementById(`js-attribute-input-${x.entry_text.value}`) as HTMLInputElement | null;
+      const isSelectField = input_field?.options;
       const entry_value = input_field?.value;
+      // const entry_text = isSelectField ? input_field.options[input_field.selectedIndex]?.text : '';
       // Check if field has a value
       if(! entry_value) return;
 

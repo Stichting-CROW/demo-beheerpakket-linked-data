@@ -1,5 +1,6 @@
 import {config} from '../config'
 import {query as attributesQuery} from '../queries/nen2660-attributes.rq.js';
+import {query as attributeEnumsQuery} from '../queries/nen2660-attribute-enum-values.rq.js';
 import {query as physicalObjectsQuery} from '../queries/nen2660-PhysicalObjects.rq.js';
 import {query as geoClassesQuery} from '../queries/geoklasse.rq.js';
 
@@ -15,6 +16,28 @@ const doRequest = async (url: string) => {
   const responseJson = await response.json();
 
   return responseJson;
+}
+
+// doPostRequest :: string -> json
+const doPostRequest = async (url: string, body: any) => {
+  let fetchOptions = {
+    method: "post",
+    headers: {
+      "Content-Type": 'application/sparql-query',
+      "authorization": `Basic ${process.env.NEXT_PUBLIC_IMBOR_TOKEN}`
+    },
+    body: body
+  }
+  const response = await fetch(url, fetchOptions);
+  const responseJson = await response.json();
+
+  return responseJson;
+}
+
+// getHubLacesTechImborGecombineerd :: string -> json
+export const getImborGecombineerd = async (query: string) => {
+  const url = 'https://api.datasets.crow.nl/datasets/imbor/latest/services/virtuoso/sparql';
+  return await doPostRequest(url, query);
 }
 
 // getKern :: string -> json
@@ -61,5 +84,15 @@ export const getAttributesForClass = async (classUri: string): Promise<any> => {
   } catch (error) {
     return null;
   }
+}
 
+export const getEnumsForAttribute = async (classUri: string): Promise<any> => {
+  const query = attributeEnumsQuery(classUri)
+
+  try {
+    const response: {[index: string]: any} = await getImborGecombineerd(query);
+    return response;
+  } catch (error) {
+    return null;
+  }
 }
