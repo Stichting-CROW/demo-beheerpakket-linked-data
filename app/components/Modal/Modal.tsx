@@ -6,21 +6,23 @@ interface ModalProps {
   primaryButtonHandler?: any;
   secundaryButtonHandler?: any;
   children: any;
+  style?: object;
 }
 
 const Modal = ({
   children,
   primaryButtonHandler,
-  secundaryButtonHandler
+  secundaryButtonHandler,
+  style
 }: ModalProps) => {
   return (
-    <div className="Modal">
+    <div className="Modal" style={style}>
 
       <p>
         {children}
       </p>
 
-      <div >
+      <div>
         <Button classes="Button-gray" onClick={secundaryButtonHandler}>
           Nee
         </Button>

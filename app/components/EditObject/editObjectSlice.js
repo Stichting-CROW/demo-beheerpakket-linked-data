@@ -1,9 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 // Get persistentState from localStorage
-const persistedState = localStorage.getItem('IMBOR_DEMO_APP_reduxState')
-  ? JSON.parse(localStorage.getItem('IMBOR_DEMO_APP_reduxState'))
-  : {}
+const persistedState = localStorage !== undefined
+  ? localStorage.getItem('IMBOR_DEMO_APP_reduxState')
+    ? JSON.parse(localStorage.getItem('IMBOR_DEMO_APP_reduxState'))
+    : {}
+  : {};
 
 const initialState = {
   physicalObjects: persistedState && persistedState.editObject
