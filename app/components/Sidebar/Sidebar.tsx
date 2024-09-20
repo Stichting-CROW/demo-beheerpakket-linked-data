@@ -6,7 +6,7 @@ import {InfoButton, InfoContent} from '../InfoButton/InfoButton';
 
 // Import helper functions
 // import EditObject from './EditObject/EditObject'
-import MapTools from '../MapTools';
+import MapTools from '../MapTools/MapTools';
 
 import './Sidebar.css'
 
@@ -18,6 +18,7 @@ const Sidebar = () => {
 
       <div className="flex justify-between">
         <h1>
+
           <span>
             IMBOR
           </span>
@@ -25,11 +26,13 @@ const Sidebar = () => {
           <small>
             demo app
           </small>
+
           <small style={{alignSelf: 'flex-end'}}>
             <InfoButton isActive={isContentVisible} onClick={() => {
               setIsContentVisible(! isContentVisible)
             }} />
           </small>
+
         </h1>
       </div>
 

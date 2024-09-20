@@ -3,6 +3,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import DatalistInput from 'react-datalist-input';
 import 'react-datalist-input/dist/styles.css';
 
+import {config} from '../../config';
+
 // Import models
 import {
   URL,
@@ -14,7 +16,7 @@ import {
 } from '../../models/Object';
 
 // Import components
-import Button from '../Button';
+import Button from '../Button/Button';
 import Attribute from './Attribute';
 
 // Import helper functions
@@ -24,10 +26,12 @@ import {
 } from '../../api/imbor'
 import {
   getAttributesForClass,
-  getPhysicalObjects
+  // getPhysicalObjects,
+  getPhysicalObjectsForSource
 } from '../../api/common'
 import {
-  getExample
+  getExample,
+  getGwsw
 } from '../../api/gwsw'
 import {
   makeTriple,
@@ -45,7 +49,7 @@ import {
   setGeoClasses,
 } from './editObjectSlice';
 
-import '../MapTools.css'
+// import '../MapTools/MapTools.css'
 import './EditObject.css'
 
 interface ImborResponse {
@@ -77,26 +81,14 @@ const EditObject = () => {
   const [attributes, setAttributes] = useState([]);
   const [locationOnMap, setLocationOnMap] = useState<lngLat>([]);
   const [activeUuid, setActiveUuid] = useState<any>();
+  const [selectedSource, setSelectedSource] = useState<any>();
   const [selectedObjectType, setSelectedObjectType] = useState<any>();
   const [geometry, setGeometry] = useState<Geometry>();
-
+  
   // Get store variables
   const physicalObjects = useSelector(selectPhysicalObjects);
   const geoClasses = useSelector(selectGeoClasses);
   const dispatch = useDispatch();
-
-  // Fetch fysical objects
-  const fetchPhysicalObjects = async () => {
-    const response = await getPhysicalObjects()
-    if(! response || ! response.results) {
-      return;
-    }
-    const uniqueTriples = getUniquePhysicalObjects(response.results.bindings);
-    const sortedTriples = uniqueTriples.sort((a, b) => {
-      return a.label.value > b.label.value ? 1 : -1;
-    });
-    dispatch(setPhysicalObjects(sortedTriples))
-  }
 
   // Fetch geo classes
   const fetchGeoClasses = async () => {
@@ -112,6 +104,7 @@ const EditObject = () => {
   const fetchAttributesForClass = async (classUri: URL) => {
     if(! classUri) return;
     const response = await getAttributesForClass(classUri);
+    console.log('fetchAttributesForClass response: ', response);
     const triples = makeTriplesObject(response);
     setAttributes(triples);
     return triples;
@@ -119,7 +112,7 @@ const EditObject = () => {
 
   // Function that runs if component loads
   useEffect(() => {
-    fetchPhysicalObjects();
+    // fetchPhysicalObjects();
     fetchGeoClasses();
   }, []);
 
@@ -128,7 +121,7 @@ const EditObject = () => {
     const geometryClickedCallback = async (e: any) => {
       // Get clicked object data
       const object = getObject(null, e.detail.uuid);
-      // If no object info was found: stop executing
+      // If no object info was found: Stop executing
       if(! object) return;
       // Make edit form visible
       setIsFormVisible(true);
@@ -142,7 +135,8 @@ const EditObject = () => {
       setSelectedObjectType({
         label: object.uri,
         id: object.label,
-        type: object.type
+        type: object.type,
+        uri: object.uri
       });
       // Add geometry (marker or polygon) to state
       // But only if it's unedited
@@ -200,31 +194,65 @@ const EditObject = () => {
     activeUuid
   ])
 
+  // Function that runs if source is selected or changes
+  useEffect(() => {
+    (async () => {
+      if(! selectedSource || ! selectedSource.id) return;
+
+      const source = config.sources[selectedSource.id];
+      if(! source) return;
+  
+      const response = await getPhysicalObjectsForSource(source);
+      const uniqueTriples = getUniquePhysicalObjects(response.results.bindings);
+      const sortedTriples = uniqueTriples.sort((a, b) => {
+        return a.label.value > b.label.value ? 1 : -1;
+      });
+      dispatch(setPhysicalObjects(sortedTriples))
+    })();
+  }, [selectedSource]);
+
   // Function that runs if selected objectType changes
   useEffect(() => {
     if(! selectedObjectType) return;
 
+    console.log('fetchAttributesForClass. selectedObjectType.label:', selectedObjectType.label)
     fetchAttributesForClass(selectedObjectType.label);
   }, [selectedObjectType])
 
   // Function that prepares data to be used for DatalistInput
-  const prepareForDataList = (objects) => {
+  const prepareSourcesForDataList = (sources: any) => {
+    let ret: any = [];
+    for(let x in sources) {
+      ret.push({
+        id: sources[x].name,
+        value: sources[x].title,
+        label: sources[x].title
+      });
+    }
+    return ret;
+  }
+
+  // Function that prepares data to be used for DatalistInput
+  const prepareObjectsForDataList = (objects: any) => {
     let ret: any = [];
     for(let x in objects) {
       ret.push({
         id: objects[x]['label'].value,
         value: objects[x]['label'].value,
         label: objects[x]['classURI'].value,
-        type: objects[x]['subClassOf'] ? objects[x]['subClassOf'].value : ''
+        type: objects[x]['subClassOf'] ? objects[x]['subClassOf'].value : '',
+        uri: objects[x]['classURI'].value
       });
     }
     return ret;
   }
 
+  // Function that resets form state
   const resetFormState = () => {
     setAttributes([])
     setLocationOnMap([])
     setGeometry(null)
+    setSelectedSource(false);
     setSelectedObjectType(false);
     setActiveUuid(false)
     // Clear form
@@ -320,7 +348,7 @@ const EditObject = () => {
   const showAttributes = selectedObjectType && geometry && geometry.inputs;
 
   // If physical objects did not load: Show loading text
-  if(! physicalObjects || physicalObjects.length <= 0) {
+  if(selectedSource && ! physicalObjects || physicalObjects.length <= 0) {
     return (
       <div className="EditObject">
         Bezig met laden van objecttypen...
@@ -358,6 +386,16 @@ const EditObject = () => {
         <form className="EditObject" id="js-editObjectForm" onSubmit={(e) => {e.preventDefault()}}>
 
           <DatalistInput
+            placeholder="Bron"
+            label="Selecteer een bron"
+            id="source"
+            onSelect={(item) => {
+              setSelectedSource(item);
+            }}
+            items={prepareSourcesForDataList(config.sources)}
+          />
+
+          {selectedSource && <DatalistInput
             placeholder="Objecttype"
             label="Selecteer een objecttype"
             id="objectType"
@@ -376,8 +414,11 @@ const EditObject = () => {
                 window.dispatchEvent(event);
               }
             }}
-            items={prepareForDataList(physicalObjects)}
-          />
+            items={prepareObjectsForDataList(physicalObjects)}
+          />}
+          {selectedObjectType ? <p className="my-2 text-xs" style={{color: "#5974FF"}}>
+            {selectedObjectType.uri}
+          </p> : <></>}
 
           {selectedObjectType && (! locationOnMap || locationOnMap.length < 1) && ! activeUuid && <p className="EditObject-note">
             Verplaats de marker op de kaart om een object toe te voegen.

@@ -1,5 +1,4 @@
 export const query = () => `
-
   PREFIX nen2660: <https://w3id.org/nen2660/def#>
   PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
   PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -14,11 +13,12 @@ export const query = () => `
   	UNION
   	{?classURI rdfs:subClassOf* nen2660:SpatialRegion.}
   	
-    ?classURI 
+    ?classURI
+
     # ... die niet abstract zijn
         dash:abstract false ;
     # en selecteer het label
         skos:prefLabel ?label .
-  }
+  } limit 99999
 
 `

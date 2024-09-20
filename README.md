@@ -1,6 +1,6 @@
-# Demo Beheerpakket Linked Data
+# Demo NEN2660 Beheer app (asset management applicatie) - Linked Data
 
-Voorbeeldimplementatie van software die werkt op basis van NEN 2660-2:2022.
+Voorbeeldimplementatie van asset management software op basis van Linked Open Data met NEN2660 ontologieen
 
 ## Introductie
 

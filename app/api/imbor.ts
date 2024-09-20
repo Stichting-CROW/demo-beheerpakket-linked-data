@@ -5,7 +5,7 @@ import {query as physicalObjectsQuery} from '../queries/nen2660-PhysicalObjects.
 import {query as geoClassesQuery} from '../queries/geoklasse.rq.js';
 
 // doRequest :: string -> json
-const doRequest = async (url: string) => {
+export const doRequest = async (url: string) => {
   let fetchOptions = {
     headers: {
       "Content-Type": 'application/sparql-query',

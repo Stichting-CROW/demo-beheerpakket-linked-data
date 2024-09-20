@@ -9,12 +9,12 @@ import {
   getDataStore,
   getObject,
   getAttributeValue
-} from '../helpers/dataStore';
+} from '../../helpers/dataStore';
 
 // Import models
 import type {
   Object
-} from '../models/Object';
+} from '../../models/Object';
 
 import './Map.css';
 

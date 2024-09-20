@@ -49,7 +49,6 @@ export const getPhysicalObjects = async (): Promise<any> => {
 
 // Inspiration: https://github.com/Stichting-CROW/ldp-queries/blob/main/src/public/IMBOR2022_Attributen_per_Klasse.rq#L38
 export const getAttributesForClass = async (classUri: string): Promise<any> => {
-  console.log('classUri', classUri)
   const query = attributesQuery(classUri)
 
   try {
