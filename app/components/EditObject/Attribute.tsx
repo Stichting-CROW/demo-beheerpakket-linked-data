@@ -3,9 +3,12 @@ import FormInput from '../FormInput/FormInput.jsx';
 import { useEffect, useState } from 'react';
 import { getEnumsForAttribute } from '../../api/common';
 import FormSelect from '../FormInput/FormSelect';
+import SourceLabel from '../SourceLabel/SourceLabel';
 
 const Attribute = ({
   data
+}: {
+  data: any
 }) => {
   const [enumValues, setEnumValues] = useState([]);
 
@@ -48,8 +51,13 @@ const Attribute = ({
     <FormLabel
       id={id}
       label={data['entry_text'].value}
-      infoText={data['entry_definition'] ? data['entry_definition'].value : ''}
-      >
+      infoText={<>
+        {data['entry_definition'] ? data['entry_definition'].value : ''}
+        <SourceLabel>
+          {data['entry_iri'].value}
+        </SourceLabel>
+      </>}
+    >
       {! hasEnumList && <FormInput
         id={id}
         type="text"

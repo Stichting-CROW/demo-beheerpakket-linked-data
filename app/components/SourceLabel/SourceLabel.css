@@ -1,0 +1,8 @@
+.SourceLabel {
+  background-color: #5974FF;
+  color: #fff;
+  overflow-wrap: break-word;
+}
+.SourceLabel:hover {
+  opacity:0.75;
+}

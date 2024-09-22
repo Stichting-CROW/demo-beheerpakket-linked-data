@@ -51,6 +51,7 @@ import {
 
 // import '../MapTools/MapTools.css'
 import './EditObject.css'
+import SourceLabel from '../SourceLabel/SourceLabel';
 
 interface ImborResponse {
   head: object,
@@ -104,7 +105,6 @@ const EditObject = () => {
   const fetchAttributesForClass = async (classUri: URL) => {
     if(! classUri) return;
     const response = await getAttributesForClass(classUri);
-    console.log('fetchAttributesForClass response: ', response);
     const triples = makeTriplesObject(response);
     setAttributes(triples);
     return triples;
@@ -215,7 +215,6 @@ const EditObject = () => {
   useEffect(() => {
     if(! selectedObjectType) return;
 
-    console.log('fetchAttributesForClass. selectedObjectType.label:', selectedObjectType.label)
     fetchAttributesForClass(selectedObjectType.label);
   }, [selectedObjectType])
 
@@ -226,7 +225,8 @@ const EditObject = () => {
       ret.push({
         id: sources[x].name,
         value: sources[x].title,
-        label: sources[x].title
+        label: sources[x].title,
+        uri: sources[x].url
       });
     }
     return ret;
@@ -395,30 +395,36 @@ const EditObject = () => {
             items={prepareSourcesForDataList(config.sources)}
           />
 
-          {selectedSource && <DatalistInput
-            placeholder="Objecttype"
-            label="Selecteer een objecttype"
-            id="objectType"
-            onSelect={(item) => {
-              setSelectedObjectType(item)
+          {selectedSource && <>
+            <SourceLabel>
+              {selectedSource.uri}
+            </SourceLabel>
+            <DatalistInput
+              placeholder="Objecttype"
+              label="Selecteer een objecttype"
+              id="objectType"
+              onSelect={(item) => {
+                setSelectedObjectType(item)
 
-              // Get geoClass (point/polygon)
-              const geoClass = getGeoClass(item.value);
+                // Get geoClass (point/polygon)
+                const geoClass = getGeoClass(item.value);
 
-              if(! geometry || ! geometry.inputs) {
-                let event = (
-                  geoClass === 'point'
-                    ? new Event("addDraggableMarker")
-                    : new Event("enableDrawing")
-                )
-                window.dispatchEvent(event);
-              }
-            }}
-            items={prepareObjectsForDataList(physicalObjects)}
-          />}
-          {selectedObjectType ? <p className="my-2 text-xs" style={{color: "#5974FF"}}>
+                if(! geometry || ! geometry.inputs) {
+                  let event = (
+                    geoClass === 'point'
+                      ? new Event("addDraggableMarker")
+                      : new Event("enableDrawing")
+                  )
+                  window.dispatchEvent(event);
+                }
+              }}
+              items={prepareObjectsForDataList(physicalObjects)}
+            />
+          </>}
+          {selectedObjectType ? <SourceLabel>
             {selectedObjectType.uri}
-          </p> : <></>}
+          </SourceLabel>
+          : <></>}
 
           {selectedObjectType && (! locationOnMap || locationOnMap.length < 1) && ! activeUuid && <p className="EditObject-note">
             Verplaats de marker op de kaart om een object toe te voegen.

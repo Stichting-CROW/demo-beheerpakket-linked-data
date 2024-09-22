@@ -7,7 +7,7 @@ interface FormLabelProps {
   id: string,
   label: string,
   children: any,
-  infoText?: string
+  infoText?: any
 }
 
 const FormLabel = ({

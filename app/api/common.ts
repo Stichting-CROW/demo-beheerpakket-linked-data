@@ -82,15 +82,15 @@ export const getPhysicalObjects = async () => {
 }
 
 export const getAttributesForClass = async (classUri: string) => {
-  // const imbor_attributes = await getImborAttributesForClass(classUri);
-  const gwsw_attributes = await getGwswAttributesForClass(classUri);
+  const imbor_attributes = await getImborAttributesForClass(classUri);
+  // const gwsw_attributes = await getGwswAttributesForClass(classUri);
 
   // Merge both objects
   const merged = {
-    head: gwsw_attributes.head,
+    head: imbor_attributes.head,
     results: {
       bindings: [
-        ...gwsw_attributes.results.bindings
+        ...imbor_attributes.results.bindings
       ]
     }
   }

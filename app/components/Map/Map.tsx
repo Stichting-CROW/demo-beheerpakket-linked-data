@@ -100,7 +100,6 @@ const Map = () => {
       // Create a DOM element for the marker (custom image)
       var el = document.createElement('div');
       el.className = 'marker';
-      console.log('NEXT_PUBLIC_PUBLIC_URL', process.env.NEXT_PUBLIC_PUBLIC_URL)
       el.style.backgroundImage = `url('${process.env.NEXT_PUBLIC_PUBLIC_URL}/components/Map/icon-marker-green.svg')`
       el.style.backgroundRepeat = 'no-repeat'
       el.style.backgroundSize = 'contain'
@@ -120,7 +119,6 @@ const Map = () => {
 
       // Add this marker to the allMarkers variable
       setAllMarkers([...allMarkers, marker]);
-      console.log('marker', marker)
     
       marker.on('dragend', onDragEnd);
       marker.on('ondblclick', () => {marker.remove()});
