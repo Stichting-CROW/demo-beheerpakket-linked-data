@@ -2,8 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Import Google Font:  Work Sans */
-@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;600;700&display=block');
+/* CROW font: MuseoSans */
+@font-face {
+  font-family: 'MuseoSans';
+  src: url('/font/MuseoSans/webfont/museosans_500-webfont.woff2') format('woff2'),
+       url('/font/MuseoSans/webfont/museosans_500-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'MuseoSans Bold';
+  src: url('/font/MuseoSans/webfont/museosans_700-webfont.woff2') format('woff2'),
+       url('/font/MuseoSans/webfont/museosans_700-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+
+}
 
 :root {
   --foreground-rgb: 0, 0, 0;
@@ -40,11 +54,11 @@ body {
   margin: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-family: 'Work Sans', sans-serif;
+  font-family: 'MuseoSans', sans-serif;
   color: #040034;
-  font-weight: 400;
-  font-size: 18px;
-  line-height: 21px;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 150%;
 }
 input {
   font-family: 'Work Sans', sans-serif;
@@ -83,9 +97,10 @@ b {
 }
 
 .heading-2 {
-  border-bottom: 1px solid #5974FF;
-  font-weight: 600;
+  font-family: "MuseoSans Bold", sans-serif;
+  border-bottom: 1px solid #009de0;
+  font-weight: 700;
   display: inline-block;
-  font-size: 20px;
-  line-height: 23px;
+  font-size: 18px;
+  line-height: 150%;
 }

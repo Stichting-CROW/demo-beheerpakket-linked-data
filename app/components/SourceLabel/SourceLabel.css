@@ -1,7 +1,9 @@
 .SourceLabel {
-  background-color: #5974FF;
+  background-color: #009de0;
   color: #fff;
   overflow-wrap: break-word;
+  font-size: 12px;
+  line-height: 150%;
 }
 .SourceLabel:hover {
   opacity:0.75;

@@ -106,7 +106,11 @@ const EditObject = () => {
     if(! classUri) return;
     const response = await getAttributesForClass(classUri);
     const triples = makeTriplesObject(response);
-    setAttributes(triples);
+    // Make ID the first attribute
+    const sortedTriples = triples.sort((a, b) => {
+      return a?.entry_text?.value === 'identificatie' ? -1 : 1;
+    });
+    setAttributes(sortedTriples);
     return triples;
   }
 
@@ -121,10 +125,24 @@ const EditObject = () => {
     const geometryClickedCallback = async (e: any) => {
       // Get clicked object data
       const object = getObject(null, e.detail.uuid);
+      console.log('object', object)
       // If no object info was found: Stop executing
       if(! object) return;
       // Make edit form visible
       setIsFormVisible(true);
+      // Set active source
+      const source = (object?.uri && object?.uri.indexOf('https://data.crow.nl') > -1)
+                      ? config.sources['imbor_kern']
+                      : config.sources['gwsw_basis_v15'];
+      const div_source = document.getElementById('source') as HTMLInputElement | null;
+      const input_source = div_source.getElementsByClassName("react-datalist-input__textbox")[0];
+      input_source?.setAttribute('placeholder', source.title);
+      setSelectedSource({
+        id: source.name,
+        value: source.title,
+        label: source.title,
+        uri: source.url
+      });
       // Set this UUID as active UUID
       setActiveUuid(e.detail.uuid)
       // Fill in 'object type' input field
@@ -335,7 +353,7 @@ const EditObject = () => {
       return 'point';
     }
     // Return geoClass if found
-    if(foundGeoClass[0].geoKlasseLabel.value === 'GM_Point') {
+    else if(foundGeoClass[0].geoKlasseLabel.value === 'GM_Point') {
       return 'point';
     }
     else if(foundGeoClass[0].geoKlasseLabel.value === 'GM_Surface') {
@@ -395,9 +413,9 @@ const EditObject = () => {
             items={prepareSourcesForDataList(config.sources)}
           />
 
-          {selectedSource && <>
+          <div style={{visibility: selectedSource ? 'visible' : 'hidden'}}>
             <SourceLabel>
-              {selectedSource.uri}
+              {selectedSource?.uri}
             </SourceLabel>
             <DatalistInput
               placeholder="Objecttype"
@@ -420,7 +438,7 @@ const EditObject = () => {
               }}
               items={prepareObjectsForDataList(physicalObjects)}
             />
-          </>}
+          </div>
           {selectedObjectType ? <SourceLabel>
             {selectedObjectType.uri}
           </SourceLabel>

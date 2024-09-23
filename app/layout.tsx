@@ -1,8 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "IMBOR demo app",
@@ -30,7 +27,7 @@ export default function RootLayout({
         <title>IMBOR demo app</title>
         <link href="https://unpkg.com/maplibre-gl@2.1.9/dist/maplibre-gl.css" rel="stylesheet" />
       </head>
-      <body className={inter.className}>
+      <body>
         {children}
       </body>
     </html>

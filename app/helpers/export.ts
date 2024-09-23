@@ -22,11 +22,6 @@ export const generateExport = () => {
     @prefix data:               <http://example.com/gemeente/areaaldata/id/> .
     
     data: a owl:Ontology ;
-            # owl:imports <C:/GitHub/imbor/data/imbor-gecombineerd-tbv-shaclvalidatie.ttl> ; # Hier wordt de IMBOR ontologie + alle afhankelijkheden aangeduidt. Dit pad zal dus verschillen. 
-            # owl:imports <https://hub.laces.tech/crow/imbor/2022/p/kern/> ;
-        #   owl:imports <C:/GitHub/imbor/data/imbor-kern.ttl> ;
-            # owl:imports <C:/GitHub/imbor/data/imbor-domeinwaarden.ttl> ;
-        #   owl:imports <https://entvmg21zqn5.x.pipedream.net>;
             owl:imports <https://w3id.org/nen2660/> ;
             owl:imports <https://data.crow.nl/imbor/def/> ;
             owl:imports <https://data.crow.nl/imbor/id/domeinwaarden/> ;
@@ -52,12 +47,12 @@ const generatePhysicalObject = (data: Object) => {
     [
         a geo:Geometry ;
         a imbor:bdb53bb7-defc-4055-b047-271c5edda82a ; #GM_Point
-        geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/28992>POINT((${data.geometry.inputs[1]} ${data.geometry.inputs[0]}))"^^geo:wktLiteral ;
+        "<http://www.opengis.net/def/crs/EPSG/0/4326>POINT((${data.geometry.inputs[1]} ${data.geometry.inputs[0]}))" ;
     ]    ; #'geometrie'
 `;
 
   // Generate attributes
-  data.attributes?.forEach((attribute) => {
+  data.attributes?.forEach((attribute: any) => {
     txt += `    ${attribute.uri.value} "${attribute.value}" ; #'${attribute.label}'
 `;
   });

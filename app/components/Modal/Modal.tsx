@@ -4,14 +4,18 @@ import './Modal.css';
 
 interface ModalProps {
   primaryButtonHandler?: any;
+  primaryButtonText?: any;
   secundaryButtonHandler?: any;
+  secundaryButtonText?: any;
   children: any;
   style?: object;
 }
 
 const Modal = ({
   children,
+  primaryButtonText,
   primaryButtonHandler,
+  secundaryButtonText,
   secundaryButtonHandler,
   style
 }: ModalProps) => {
@@ -23,12 +27,12 @@ const Modal = ({
       </p>
 
       <div>
-        <Button classes="Button-gray" onClick={secundaryButtonHandler}>
-          Nee
-        </Button>
+        {secundaryButtonHandler && <Button classes="Button-gray" onClick={secundaryButtonHandler}>
+          {secundaryButtonText || 'Nee'}
+        </Button>}
 
         <Button classes="Button-orange margin-left" onClick={primaryButtonHandler}>
-          Ja
+          {primaryButtonText || 'Ja'}
         </Button>
       </div>
 

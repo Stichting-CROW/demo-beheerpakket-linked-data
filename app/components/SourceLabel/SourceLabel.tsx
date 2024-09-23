@@ -4,7 +4,7 @@ const SourceLabel = ({children}: {children: string}) => {
   return <>
     <a
       href={children} target="_blank" rel="external"
-      className="SourceLabel block rounded p-2 my-2 text-xs"
+      className="SourceLabel block rounded p-2 py-1 my-3"
     >
       {children}
     </a>
