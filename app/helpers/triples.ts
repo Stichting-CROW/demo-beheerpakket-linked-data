@@ -1,8 +1,8 @@
 import { DataFactory } from 'rdf-data-factory';
 const factory = new DataFactory();
 
-const makeTriple = (obj) => {
-  let data = {};
+const makeTriple = (obj: any) => {
+  let data: any = {};
   for(let key in obj) {
     data[key] = obj[key];
   }
@@ -10,7 +10,7 @@ const makeTriple = (obj) => {
   return data;
 }
 
-const makeTriplesObject = (response) => {
+const makeTriplesObject = (response: any) => {
   let triples: any = [];
 
   // Return unique triples

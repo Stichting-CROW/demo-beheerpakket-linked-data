@@ -60,8 +60,12 @@ interface ImborResponse {
   }
 }
 
-const Attributes = ({data}) => {
-  if(! data || data.length <= 0) return <></>;
+interface AttributesProps {
+  data: any[];
+}
+
+const Attributes: React.FC<AttributesProps> = ({ data }) => {
+  if (!data || data.length <= 0) return null;
 
   return (
     <div data-name="attributes">
@@ -107,7 +111,7 @@ const EditObject = () => {
     const response = await getAttributesForClass(classUri);
     const triples = makeTriplesObject(response);
     // Make ID the first attribute
-    const sortedTriples = triples.sort((a, b) => {
+    const sortedTriples = triples.sort((a: any, b: any) => {
       return a?.entry_text?.value === 'identificatie' ? -1 : 1;
     });
     setAttributes(sortedTriples);
@@ -124,18 +128,18 @@ const EditObject = () => {
   useEffect(() => {
     const geometryClickedCallback = async (e: any) => {
       // Get clicked object data
-      const object = getObject(null, e.detail.uuid);
+      const object: any = getObject(null, e.detail.uuid);
       console.log('object', object)
       // If no object info was found: Stop executing
       if(! object) return;
       // Make edit form visible
       setIsFormVisible(true);
       // Set active source
-      const source = (object?.uri && object?.uri.indexOf('https://data.crow.nl') > -1)
+      const source: any = (object?.uri && object?.uri.indexOf('https://data.crow.nl') > -1)
                       ? config.sources['imbor_kern']
                       : config.sources['gwsw_basis_v15'];
-      const div_source = document.getElementById('source') as HTMLInputElement | null;
-      const input_source = div_source.getElementsByClassName("react-datalist-input__textbox")[0];
+      const div_source: HTMLInputElement | null = document.getElementById('source') as HTMLInputElement | null;
+      const input_source: HTMLInputElement | null = div_source?.getElementsByClassName("react-datalist-input__textbox")[0] as HTMLInputElement | null;
       input_source?.setAttribute('placeholder', source.title);
       setSelectedSource({
         id: source.name,
@@ -146,8 +150,8 @@ const EditObject = () => {
       // Set this UUID as active UUID
       setActiveUuid(e.detail.uuid)
       // Fill in 'object type' input field
-      const div_objectType = document.getElementById('objectType') as HTMLInputElement | null;
-      const input_objectType = div_objectType.getElementsByClassName("react-datalist-input__textbox")[0];
+      const div_objectType: HTMLInputElement | null = document.getElementById('objectType') as HTMLInputElement | null;
+      const input_objectType = div_objectType?.getElementsByClassName("react-datalist-input__textbox")[0];
       input_objectType?.setAttribute('placeholder', object.label);
       // Update 'objectType' state variable
       setSelectedObjectType({
@@ -167,11 +171,11 @@ const EditObject = () => {
       // Fill in all attributes after a few milliseconds (so state can update first)
       setTimeout(() => {
         if(! object.attributes) return;
-        object.attributes.forEach(x => {
+        object.attributes.forEach((x: any) => {
           if(! x.value) return;
-          const el = document.getElementById(`js-attribute-input-${x.label}`) as HTMLInputElement | HTMLSelectElement | null;
+          const el: any = document.getElementById(`js-attribute-input-${x.label}`);
           // If it's a select field:
-          if(el?.options) {
+          if(el?.options) { 
             el.value = x.value;
           }
           // If it's an input field:
@@ -269,13 +273,15 @@ const EditObject = () => {
   const resetFormState = () => {
     setAttributes([])
     setLocationOnMap([])
-    setGeometry(null)
-    setSelectedSource(false);
-    setSelectedObjectType(false);
-    setActiveUuid(false)
+    setGeometry(undefined)
+    setSelectedSource(null);
+    setSelectedObjectType(null);
+    setActiveUuid(null)
     // Clear form
-    const form = document.getElementById('js-editObjectForm') as HTMLFormElement | null;
-    form.reset();
+    const form = document.getElementById('js-editObjectForm') as HTMLFormElement;
+    if (form) {
+      form.reset();
+    }
     // Reload data
     const myEvent = new CustomEvent("fysicalObjectsUpdated");
     window.dispatchEvent(myEvent);
@@ -285,7 +291,8 @@ const EditObject = () => {
   const handleSubmit = () => {
     // Validate that location was set
     if(! geometry || ! geometry.inputs || geometry.inputs.length <= 0) {
-      window['notify']('Verplaats eerst de marker op de kaart of teken een gebied in');
+      const windowCopy: any = window;
+      windowCopy.notify('Verplaats eerst de marker op de kaart of teken een gebied in');
       return;
     }
 
@@ -294,10 +301,10 @@ const EditObject = () => {
 
     // Populate attributes array
     let attributesArray = [] as AttributeRelationValue<Literal>[];
-    attributes.forEach(x => {
+    attributes.forEach((x: any) => {
       if(! x.entry_text) return;
       // Get input value
-      const input_field = document.getElementById(`js-attribute-input-${x.entry_text.value}`) as HTMLInputElement | null;
+      const input_field: any = document.getElementById(`js-attribute-input-${x.entry_text.value}`) as HTMLInputElement | null;
       const isSelectField = input_field?.options;
       const entry_value = input_field?.value;
       // const entry_text = isSelectField ? input_field.options[input_field.selectedIndex]?.text : '';
@@ -325,7 +332,9 @@ const EditObject = () => {
     // Store attributesArray with all values into localStorage
     const dataStore = getDataStore();
     dataStore[uuid] = object;
-    localStorage.setItem('IMBOR_DEMO_APP_physicalObjects', JSON.stringify(dataStore));
+    if(typeof window !== 'undefined') {
+      localStorage.setItem('IMBOR_DEMO_APP_physicalObjects', JSON.stringify(dataStore));
+    }
 
     // Close EditForm
     resetFormState();
@@ -343,7 +352,7 @@ const EditObject = () => {
   // Get geo type (point/polygon) of objects parent classUri
   const getGeoClass = (objectType: URL): boolean | string => {
     // Filter geoClasses on objectType
-    const foundGeoClass = geoClasses.filter(x => {
+    const foundGeoClass = geoClasses.filter((x: any) => {
       return x.classURI.value === objectType;
     })
     if(objectType === 'Wegvak' || objectType === 'Halteplaats') {
@@ -375,26 +384,28 @@ const EditObject = () => {
   }
 
   return (
-    <>
-      {showAttributes && (
-        <Button onClick={(e) => {
-          e.preventDefault();
-          handleSubmit();
-        }}
-        >
-          Opslaan
-        </Button>
-      )}
+    <div className="EditObject">
+      <div className="EditObject-buttons">
+        {showAttributes && (
+          <Button onClick={(e: Event) => {
+            e.preventDefault();
+            handleSubmit();
+          }}
+          >
+            Opslaan
+          </Button>
+        )}
 
-      <Button
-        classes={`${isFormVisible ? 'Button-white' : ''} ${(isFormVisible && locationOnMap && locationOnMap.length >= 1) ? 'margin-left' : ''}`}
-        onClick={() => {
-          setIsFormVisible(! isFormVisible);
-          resetFormState();
-        }}
-        >
-        {isFormVisible ? 'Annuleer' : 'Object toevoegen'}
-      </Button>
+        <Button
+          classes={`${isFormVisible ? 'Button-white' : ''} ${(isFormVisible && locationOnMap && locationOnMap.length >= 1) ? 'margin-left' : ''}`}
+          onClick={() => {
+            setIsFormVisible(! isFormVisible);
+            resetFormState();
+          }}
+          >
+          {isFormVisible ? 'Annuleer' : 'Object toevoegen'}
+        </Button>
+      </div>
 
       <div
         className="InfoBox"
@@ -405,7 +416,7 @@ const EditObject = () => {
 
           <DatalistInput
             placeholder="Bron"
-            label="Selecteer een bron"
+            label="1. Selecteer een bron"
             id="source"
             onSelect={(item) => {
               setSelectedSource(item);
@@ -419,7 +430,7 @@ const EditObject = () => {
             </SourceLabel>
             <DatalistInput
               placeholder="Objecttype"
-              label="Selecteer een objecttype"
+              label="2. Selecteer een objecttype"
               id="objectType"
               onSelect={(item) => {
                 setSelectedObjectType(item)
@@ -454,7 +465,7 @@ const EditObject = () => {
         </form>
 
       </div>
-    </>
+    </div>
   )
 }
 

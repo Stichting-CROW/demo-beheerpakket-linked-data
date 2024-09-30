@@ -29,10 +29,10 @@ const getObjects = () => {
   return objects;
 }
 
-const ObjectRow = ({data}) => {
+const ObjectRow = ({data}: {data: any}) => {
   const [showModal, setShowModal] = useState(false);
 
-  const openObjectDetails = (e) => {
+  const openObjectDetails = (e: any) => {
     // Click marker
     const myEvent = new CustomEvent("markerClicked", {
       detail: {
@@ -41,7 +41,7 @@ const ObjectRow = ({data}) => {
     });
     window.dispatchEvent(myEvent);
     // Scroll to top of sidebar
-    var sidebar = document.getElementById('js-Sidebar');
+    var sidebar: any = document.getElementById('js-Sidebar');
     sidebar.scrollTop = 0;
   };
   const deleteObjectHandler = () => {
@@ -57,7 +57,7 @@ const ObjectRow = ({data}) => {
   }
 
   // Get object from store
-  const object = getObject(null, data.uuid);
+  const object: any = getObject(null, data.uuid);
   // Get 'identificatie' value
   const identificatie = getAttributeValue(object, 'identificatie');
 
@@ -86,10 +86,10 @@ const ObjectRow = ({data}) => {
 
 const ObjectList = () => {
   const [isFormVisible, setIsFormVisible] = useState(false);
-  const [objects, setObjects] = useState([]);
+  const [objects, setObjects] = useState<any>([]);
 
   const fetchObjects = () => {
-    setObjects(getObjects())
+    setObjects(getObjects());
   }
 
   // On component load: load objects
@@ -115,7 +115,7 @@ const ObjectList = () => {
       </h2>
 
       <div>
-        {objects ? objects.map(x => {
+        {objects ? objects.map((x: any) => {
           return <ObjectRow key={x.uuid} data={x} />
         }) : <div />}
       </div>

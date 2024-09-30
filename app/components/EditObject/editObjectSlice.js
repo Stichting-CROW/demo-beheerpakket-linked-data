@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 // Get persistentState from localStorage
-const persistedState = localStorage !== undefined
+const persistedState = typeof window !== 'undefined'
   ? localStorage.getItem('IMBOR_DEMO_APP_reduxState')
     ? JSON.parse(localStorage.getItem('IMBOR_DEMO_APP_reduxState'))
     : {}

@@ -10,7 +10,7 @@ const Attribute = ({
 }: {
   data: any
 }) => {
-  const [enumValues, setEnumValues] = useState([]);
+  const [enumValues, setEnumValues] = useState<any[]>([]);
 
   // Load data type or enum values
   useEffect(() => {

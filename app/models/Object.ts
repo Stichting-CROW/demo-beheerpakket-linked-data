@@ -11,11 +11,11 @@ export type Literal = string | boolean | number | any;
 
 export class AttributeRelationValue<T extends Literal | URL> {
   // URI van attribuut
-  uri: string | object;
+  uri: string | object | undefined;
   // Verwijst  naar IMBOR (of andere ontologie), wel stabiel
-  type: URL;
+  type: URL | undefined;
   // Bij relaties een URL, bij attributen een Literal
-  value: T;
+  value: T | undefined;
   // Label van type (bijvoorbeeld "snoeifrequentie")
   label?: string;
   // Misschien niet nodig? t.b.v. datums die als strings worden geserialiseerd

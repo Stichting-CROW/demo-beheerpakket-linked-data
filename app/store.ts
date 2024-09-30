@@ -16,5 +16,7 @@ store.subscribe(() => {
     lastUpdate: Date.now(),
     editObject: storeState.editObject
   }
-  localStorage.setItem('IMBOR_DEMO_APP_reduxState', JSON.stringify(storeStateToSaveInLocalStorage))
+  if(typeof window !== 'undefined') {
+    localStorage.setItem('IMBOR_DEMO_APP_reduxState', JSON.stringify(storeStateToSaveInLocalStorage))
+  }
 })

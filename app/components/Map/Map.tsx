@@ -22,8 +22,8 @@ const Map = () => {
   const mapContainer = useRef(null);
   let map: any;
 
-  const [activeMarker, setActiveMarker] = useState(null);
-  const [allMarkers, setAllMarkers] = useState([]);// Keep track of all markers
+  const [activeMarker, setActiveMarker] = useState<any>(null);
+  const [allMarkers, setAllMarkers] = useState<any[]>([]);// Keep track of all markers
   const [isDrawingEnabled, setIsDrawingEnabled] = useState(false);
   const [drawedGeometry, setDrawedGeometry] = useState(false);
 
@@ -48,9 +48,10 @@ const Map = () => {
     });
     map.addControl(draw);
 
-    // Save global vars 
-    window['IMBOR_DEMO_APP_map'] = map;
-    window['IMBOR_DEMO_APP_mapDraw'] = draw;
+    // Save global vars
+    const windowCopy = window as any;
+    windowCopy['IMBOR_DEMO_APP_map'] = map;
+    windowCopy['IMBOR_DEMO_APP_mapDraw'] = draw;
 
     // Add markers to the map
     addShapesToMap(map);
@@ -69,7 +70,7 @@ const Map = () => {
   // Function for adding and removing markers
   useEffect(() => {
     // Add marker
-    const addDraggableMarker = (theMap) => {
+    const addDraggableMarker = (theMap: any) => {
       if(! theMap) return;
       if(activeMarker) return;
       console.log('process.env', process.env)
@@ -115,7 +116,7 @@ const Map = () => {
       .addTo(theMap);
 
       // Make this marker the active marker
-      setActiveMarker(marker);
+      setActiveMarker(marker as any);
 
       // Add this marker to the allMarkers variable
       setAllMarkers([...allMarkers, marker]);
@@ -125,7 +126,7 @@ const Map = () => {
     }
 
     // Remove marker
-    const removeMarker = (theMap) => {
+    const removeMarker = (theMap: any) => {
       console.log('removeMarker')
       if(! activeMarker) return;
       // Remove it
@@ -134,8 +135,9 @@ const Map = () => {
       setActiveMarker(null);
     }
 
-    const callbackAdd = addDraggableMarker.bind(this, window['IMBOR_DEMO_APP_map']);
-    const callbackRemove = removeMarker.bind(this, window['IMBOR_DEMO_APP_map']);
+    const windowCopy = window as any;
+    const callbackAdd = addDraggableMarker.bind(this, windowCopy['IMBOR_DEMO_APP_map']);
+    const callbackRemove = removeMarker.bind(this, windowCopy['IMBOR_DEMO_APP_map']);
     window.addEventListener('addDraggableMarker', callbackAdd);
     window.addEventListener('removeMarker', callbackRemove);
     return () => {
@@ -148,15 +150,16 @@ const Map = () => {
 
   // Function for drawing shapes on the map
   useEffect(() => {
+    const windowCopy = window as any;
     const enableDrawing = () => {
       setIsDrawingEnabled(true);
-      window['IMBOR_DEMO_APP_mapDraw'].changeMode('draw_polygon');
+      windowCopy['IMBOR_DEMO_APP_mapDraw'].changeMode('draw_polygon');
     }
     const disableDrawing = () => {
       setIsDrawingEnabled(true);
-      window['IMBOR_DEMO_APP_mapDraw'].changeMode('simple_select');
+      windowCopy['IMBOR_DEMO_APP_mapDraw'].changeMode('simple_select');
     }
-    const updatePolygon = (e) => {
+    const updatePolygon = (e: any) => {
       if(! e.features) return;
       if(! e.features[0]) return;
 
@@ -173,8 +176,8 @@ const Map = () => {
       window.dispatchEvent(event);
     }
     // Event handlers
-    window['IMBOR_DEMO_APP_map'].on('draw.create', updatePolygon);
-    window['IMBOR_DEMO_APP_map'].on('draw.update', updatePolygon);
+    windowCopy['IMBOR_DEMO_APP_map'].on('draw.create', updatePolygon);
+    windowCopy['IMBOR_DEMO_APP_map'].on('draw.update', updatePolygon);
     window.addEventListener('enableDrawing', enableDrawing);
     window.addEventListener('disableDrawing', disableDrawing);
 
@@ -186,11 +189,11 @@ const Map = () => {
     isDrawingEnabled
   ])
 
-  const preparePopup = (uuid) => {
+  const preparePopup = (uuid: any) => {
     // Get object from store
-    const object = getObject(null, uuid);
+    const object: any = getObject(null, uuid);
     // Get 'identificatie' value
-    const identificatie = getAttributeValue(object, 'identificatie');
+    const identificatie: any = getAttributeValue(object, 'identificatie');
     let popup;
     if(identificatie) {
       // Create popup
@@ -201,7 +204,7 @@ const Map = () => {
     return popup;
   }
 
-  const drawMarker = (map, uuid, geometry) => {
+  const drawMarker = (map: any, uuid: any, geometry: any) => {
     if(! uuid) return;
     if(! geometry || ! geometry.inputs) return;
 
@@ -232,7 +235,7 @@ const Map = () => {
     // Save marker in local variable, so we can remove it later
     allMarkers.push(marker)
 
-    map.on('click', (e) => {
+    map.on('click', (e: any) => {
       const targetElement = e.originalEvent.target;
       const element = marker._element;
       if (targetElement === element || element.contains((targetElement))) {
@@ -246,8 +249,9 @@ const Map = () => {
     })
   }
 
-  const drawPolygon = (map, uuid, geometry) => {
-    var ids = window['IMBOR_DEMO_APP_mapDraw'].add({
+  const drawPolygon = (map: any, uuid: any, geometry: any) => {
+    const windowCopy = window as any;
+    var ids = windowCopy['IMBOR_DEMO_APP_mapDraw'].add({
       type: 'FeatureCollection',
       features: [{
         type: 'Feature',
@@ -262,7 +266,8 @@ const Map = () => {
   }
 
   const removeMarkersFromMap = (map?: any) => {
-    if(! map) map = window['IMBOR_DEMO_APP_map'];
+    const windowCopy = window as any;
+    if(! map) map = windowCopy['IMBOR_DEMO_APP_map'];
 
     // Remove all markers
     allMarkers.forEach(marker => {
@@ -276,10 +281,11 @@ const Map = () => {
   }
 
   const removeShapesFromMap = (map?: any) => {
-    if(! map) map = window['IMBOR_DEMO_APP_map'];
+    const windowCopy = window as any;
+    if(! map) map = windowCopy['IMBOR_DEMO_APP_map'];
 
     // Remove all shapes
-    var ids = window['IMBOR_DEMO_APP_mapDraw'].set({
+    var ids = windowCopy['IMBOR_DEMO_APP_mapDraw'].set({
       type: 'FeatureCollection',
       features: []
     });
@@ -288,7 +294,8 @@ const Map = () => {
   }
 
   const addShapesToMap = (map?: any) => {
-    if(! map) map = window['IMBOR_DEMO_APP_map'];
+    const windowCopy = window as any;
+    if(! map) map = windowCopy['IMBOR_DEMO_APP_map'];
 
     // Remove all existing markers and shapes on the map
     removeMarkersFromMap();
@@ -297,7 +304,7 @@ const Map = () => {
     // Load data store
     const dataStore = getDataStore();
     // Loop data store and check for object locations
-    const getObjectLngLat = (uuid, object) => {
+    const getObjectLngLat = (uuid: any, object: any) => {
       return {
         uuid: uuid,
         geometry: object.geometry
@@ -316,7 +323,7 @@ const Map = () => {
     })
 
     // If polygon is clicked
-    map.on('draw.selectionchange', (e) => {
+    map.on('draw.selectionchange', (e: any) => {
       if(! e.features || ! e.features[0]) return;
 
       const myEvent = new CustomEvent("geometryClicked", {

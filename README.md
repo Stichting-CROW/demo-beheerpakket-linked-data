@@ -112,8 +112,16 @@ Documentatie over hoe te authenticeren op de Laces Hub:
 De IMBOR ontologie verkennen:
 - [IMBOR Onto Verkenner](https://docs.crow.nl/onto-verkenner/imbor/#/view)
 
+De SPARQL tool voor GWSW:
+- https://sparql.gwsw.nl/sparql
+
 ## Note to self
 
 ### GitHub Pages: y is not defined
 
 Er was het probleem dat GitHub Pages een foutmelding gaf: `y is not defined`. Dit is opgelost met [deze oplossing](https://github.com/alex3165/react-mapbox-gl/issues/931#issuecomment-826135957).
+
+### Deployment process using github
+
+"Here are the steps you can follow:"
+https://stackoverflow.com/a/76168716
