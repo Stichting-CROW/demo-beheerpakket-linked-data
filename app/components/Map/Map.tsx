@@ -37,7 +37,7 @@ const Map = () => {
     // Init map
     map = new maplibregl.Map({
       container: mapContainer.current,
-      style: 'https://api.maptiler.com/maps/streets/style.json?key=get_your_own_OpIi9ZULNHzrESv6T2vL',
+      style: `https://api.maptiler.com/maps/streets/style.json?key=${process.env.NEXT_PUBLIC_MAPTILER_API_KEY || '2mKz8W2VxQE27jCB9f3v'}`,
       center: [5.108336,52.092857], // starting position [lng, lat]
       zoom: 18 // starting zoom
     });
