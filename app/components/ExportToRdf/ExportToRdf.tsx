@@ -16,6 +16,17 @@ const ExportToRdf = () => {
     const response = generateExport();
     setExportRdf(response)
   }, []);
+
+  const downloadIt = () => {
+    const blob = new Blob([exportRdf], { type: 'text/plain' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.href = url;
+    a.download = 'export.ttl';
+    document.body.appendChild(a);
+    a.click();
+  }
   
   return (<>
     <h2 className="heading-2">
@@ -28,8 +39,10 @@ const ExportToRdf = () => {
 
     {showExportModal && <>
       <Modal
-        primaryButtonText="Sluiten"
+        primaryButtonText="Sluit"
         primaryButtonHandler={() => setShowExportModal(false)}
+        secundaryButtonText="Download"
+        secundaryButtonHandler={() => downloadIt()}
         style={{
           width: 'calc(100% - 360px)',
           left: '350px',/* sidebar 320px + 20px spacing */
