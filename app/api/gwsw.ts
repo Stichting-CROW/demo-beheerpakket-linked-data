@@ -21,7 +21,7 @@ const doRequest = async (url: string, query: string) => {
 
 // getKern :: string -> json
 export const getGwsw = async (query: string) => {
-  const url = config.imbor.gwsw_basis_v15;
+  const url = config.imbor.gwsw_basis_v161;
   return await doRequest(`${url}`, `query=${query}`);
 }
 
