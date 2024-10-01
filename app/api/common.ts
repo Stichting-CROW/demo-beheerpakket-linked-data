@@ -23,7 +23,7 @@ export const getPhysicalObjectsForSource = async (source: Source) => {
   let query = '';
   if(source.title === 'IMBOR kern') {
     query = query_imbor_kern__objects();
-  } else if(source.title === 'GWSW Basis v15') {
+  } else if(source.title === 'GWSW Basis v161') {
     query = query_gwsw_basis_v15__objects();
   }
   if(! query) return false;
