@@ -2,8 +2,7 @@ import { getDataStore } from "./dataStore";
 
 // Import models
 import type {
-  Object,
-  AttributeRelationValue
+  Object
 } from '../models/Object';
 
 export const generateExport = () => {
@@ -49,7 +48,7 @@ const generatePhysicalObject = (data: Object) => {
 
   // If [1] has a value: this is a POINT
   if(data.geometry.inputs[1]) {
-    txt += `      imbor:bdb53bb7-defc-4055-b047-271c5edda82a ; #GM_Point
+    txt += `      a imbor:bdb53bb7-defc-4055-b047-271c5edda82a ; #GM_Point
         geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/4326>POINT((${data.geometry.inputs[1] ? data.geometry.inputs[1] : ''} ${data.geometry.inputs[0]}))" ;`;
   }
   // Otherwise it's a SURFACE
