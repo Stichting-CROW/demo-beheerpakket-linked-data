@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "IMBOR demo app",
+  title: "Demo NEN2660 Beheer app (asset management applicatie)",
   description: "Voorbeeldimplementatie van software die werkt op basis van NEN 2660-2:2022",
 };
 
@@ -24,7 +24,7 @@ export default function RootLayout({
         />
         <link rel="apple-touch-icon" href="%PUBLIC_URL%/icon/icon-imbor-app.png" />
         <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-        <title>IMBOR demo app</title>
+        <title>Demo NEN2660 Beheer app (asset management applicatie)</title>
         <link href="https://unpkg.com/maplibre-gl@2.1.9/dist/maplibre-gl.css" rel="stylesheet" />
       </head>
       <body>
