@@ -5,7 +5,7 @@ const config: Config = {
     // vocabulaire: 'https://hub.laces.tech/crow/imbor/2022/p/vocabulaire/sparql',
     kern: 'https://hub.laces.tech/crow/imbor/2022/p/kern/sparql',
     kern_informatief: 'https://hub.laces.tech/crow/imbor/2022/p/kern/sparql?&default-graph-uri=https://hub.laces.tech/crow/imbor/2022/p/informatief',
-    gwsw_basis_v15: 'https://sparql.gwsw.nl/repositories/GWSW_Basis_v15'
+    gwsw_basis_v161: 'https://sparql.gwsw.nl/repositories/GWSW_Basis_v161'
   },
   sources: {
     "imbor_kern": {
@@ -20,10 +20,10 @@ const config: Config = {
         }
       }
     },
-    "gwsw_basis_v15": {
-      name: "gwsw_basis_v15",
-      title: "GWSW Basis v15",
-      url: "https://sparql.gwsw.nl/repositories/GWSW_Basis_v15",
+    "gwsw_basis_v161": {
+      name: "gwsw_basis_v161",
+      title: "GWSW Basis v161",
+      url: "https://sparql.gwsw.nl/repositories/GWSW_Basis_v161",
       fetchOptions: {
         method: "post",
         headers: {

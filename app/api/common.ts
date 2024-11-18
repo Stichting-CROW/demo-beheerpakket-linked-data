@@ -9,7 +9,7 @@ import {getAttributesForClass as getGwswAttributesForClass} from './gwsw';
 import {getEnumsForAttribute as getImborEnumsForAttribute} from './imbor';
 
 import {query as query_imbor_kern__objects} from '../queries/nen2660-PhysicalObjects.rq.js';
-import {query as query_gwsw_basis_v15__objects} from '../queries/gwsw-PhysicalObjects.rq.js';
+import {query as query_gwsw_basis_v161__objects} from '../queries/gwsw-PhysicalObjects.rq.js';
 
 // doRequest :: string -> json
 export const doRequest = async (url: string, requestOptions: any) => {
@@ -23,8 +23,8 @@ export const getPhysicalObjectsForSource = async (source: Source) => {
   let query = '';
   if(source.title === 'IMBOR kern') {
     query = query_imbor_kern__objects();
-  } else if(source.title === 'GWSW Basis v15') {
-    query = query_gwsw_basis_v15__objects();
+  } else if(source.title === 'GWSW Basis v161') {
+    query = query_gwsw_basis_v161__objects();
   }
   if(! query) return false;
 
@@ -71,8 +71,8 @@ export const getPhysicalObjects = async () => {
     head: imbor_objects.head,
     results: {
       bindings: [
-        ...imbor_objects.results.bindings,
-        ...gwsw_objects.results.bindings
+        ...imbor_objects.results?.bindings,
+        ...gwsw_objects.results?.bindings
       ]
     }
   }
@@ -90,7 +90,7 @@ export const getAttributesForClass = async (classUri: string) => {
     head: imbor_attributes.head,
     results: {
       bindings: [
-        ...imbor_attributes.results.bindings
+        ...imbor_attributes.results?.bindings
       ]
     }
   }

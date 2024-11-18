@@ -102,7 +102,7 @@ const EditObject = () => {
       return;
     }
     // Store geoClasses in local store
-    dispatch(setGeoClasses(response.results.bindings))
+    dispatch(setGeoClasses(response.results?.bindings))
   }
 
   // Fetch attributes for a specific FysicalObject class
@@ -137,7 +137,7 @@ const EditObject = () => {
       // Set active source
       const source: any = (object?.uri && object?.uri.indexOf('https://data.crow.nl') > -1)
                       ? config.sources['imbor_kern']
-                      : config.sources['gwsw_basis_v15'];
+                      : config.sources['gwsw_basis_v161'];
       const div_source: HTMLInputElement | null = document.getElementById('source') as HTMLInputElement | null;
       const input_source: HTMLInputElement | null = div_source?.getElementsByClassName("react-datalist-input__textbox")[0] as HTMLInputElement | null;
       input_source?.setAttribute('placeholder', source.title);
@@ -225,7 +225,7 @@ const EditObject = () => {
       if(! source) return;
   
       const response = await getPhysicalObjectsForSource(source);
-      const uniqueTriples = getUniquePhysicalObjects(response.results.bindings);
+      const uniqueTriples = getUniquePhysicalObjects(response.results?.bindings);
       const sortedTriples = uniqueTriples.sort((a, b) => {
         return a.label.value > b.label.value ? 1 : -1;
       });
