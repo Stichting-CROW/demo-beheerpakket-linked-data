@@ -41,7 +41,7 @@ const generatePhysicalObject = (data: Object) => {
   let txt = '';
 
   txt += `
-    data:${data.uuid} a imbor:83a942f7-5291-42f0-afb1-9a57d0fb2f15 ; #'${data.label}'
+    a data:${data.uuid} a imbor:83a942f7-5291-42f0-afb1-9a57d0fb2f15 ; #'${data.label}'
     nen2660:hasBoundary 
     [
         a geo:Geometry ;
