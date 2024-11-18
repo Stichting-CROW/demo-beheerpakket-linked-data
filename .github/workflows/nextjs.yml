@@ -91,3 +91,6 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        env:
+          NEXT_PUBLIC_IMBOR_TOKEN: ${{env.NEXT_PUBLIC_IMBOR_TOKEN}}
+          NEXT_PUBLIC_MAPTILER_API_KEY: ${{env.NEXT_PUBLIC_MAPTILER_API_KEY}}
