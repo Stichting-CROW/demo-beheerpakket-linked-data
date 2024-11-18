@@ -122,7 +122,6 @@ const EditObject = () => {
     const geometryClickedCallback = async (e: any) => {
       // Get clicked object data
       const object: any = getObject(null, e.detail.uuid);
-      console.log('object', object)
       // If no object info was found: Stop executing
       if(! object) return;
       // Make edit form visible
@@ -346,7 +345,7 @@ const EditObject = () => {
   const getGeoClass = (objectType: URL): boolean | string => {
     // Filter geoClasses on objectType
     const foundGeoClass = geoClasses.filter((x: any) => {
-      return x.classURI.value === objectType;
+      return x.classURI?.value === objectType;
     })
     if(objectType === 'Wegvak' || objectType === 'Halteplaats') {
       return 'polygon';
