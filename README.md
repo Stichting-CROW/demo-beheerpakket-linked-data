@@ -121,7 +121,7 @@ De SPARQL tool voor GWSW:
 
 Er was het probleem dat GitHub Pages een foutmelding gaf: `y is not defined`. Dit is opgelost met [deze oplossing](https://github.com/alex3165/react-mapbox-gl/issues/931#issuecomment-826135957).
 
-### Deployment process using github
+### Deployment process using GitHub Actions
 
 "Here are the steps you can follow:"
 https://stackoverflow.com/a/76168716

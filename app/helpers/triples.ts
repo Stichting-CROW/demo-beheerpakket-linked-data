@@ -21,6 +21,8 @@ const getUniquePhysicalObjects = (input: { [x: string]: any; }) => {
   // Only keep unique ones, remove duplicates
   let uniqueLabels: any[] = [];
   let uniqueTriples: any[] = [];
+
+  if(! input) return uniqueTriples;
   Object.keys(input).forEach((key) => {
     const triple = input[key];
     if(uniqueLabels.indexOf(triple.label.value) > -1) {

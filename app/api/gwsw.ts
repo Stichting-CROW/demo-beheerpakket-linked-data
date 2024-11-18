@@ -1,7 +1,7 @@
 import {config} from '../config'
 import {query as exampleQuery} from '../queries/gwsw-example.js';
 import {query as physicalObjectsQuery} from '../queries/gwsw-PhysicalObjects.rq.js';
-import {query as attributesQuery} from '../queries/nen2660-attributes.rq.js';
+import {query as attributesQuery} from '../queries/gwsw-attributes.rq.js';
 
 // doRequest :: string -> json
 const doRequest = async (url: string, query: string) => {

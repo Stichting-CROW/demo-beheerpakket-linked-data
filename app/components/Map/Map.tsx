@@ -73,7 +73,6 @@ const Map = () => {
     const addDraggableMarker = (theMap: any) => {
       if(! theMap) return;
       if(activeMarker) return;
-      console.log('process.env', process.env)
 
       const onDragEnd = async () => {
         // Get lng/lat of this marker
@@ -127,7 +126,6 @@ const Map = () => {
 
     // Remove marker
     const removeMarker = (theMap: any) => {
-      console.log('removeMarker')
       if(! activeMarker) return;
       // Remove it
       activeMarker.remove();

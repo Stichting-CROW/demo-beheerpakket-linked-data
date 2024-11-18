@@ -26,15 +26,9 @@ import {
 } from '../../api/imbor'
 import {
   getAttributesForClass,
-  // getPhysicalObjects,
   getPhysicalObjectsForSource
 } from '../../api/common'
 import {
-  getExample,
-  getGwsw
-} from '../../api/gwsw'
-import {
-  makeTriple,
   makeTriplesObject,
   getUniquePhysicalObjects
 } from '../../helpers/triples';
@@ -49,9 +43,9 @@ import {
   setGeoClasses,
 } from './editObjectSlice';
 
-// import '../MapTools/MapTools.css'
 import './EditObject.css'
 import SourceLabel from '../SourceLabel/SourceLabel';
+import { Source } from '@/app/types';
 
 interface ImborResponse {
   head: object,
@@ -106,9 +100,9 @@ const EditObject = () => {
   }
 
   // Fetch attributes for a specific FysicalObject class
-  const fetchAttributesForClass = async (classUri: URL) => {
+  const fetchAttributesForClass = async (source: Source, classUri: URL) => {
     if(! classUri) return;
-    const response = await getAttributesForClass(classUri);
+    const response = await getAttributesForClass(source, classUri);
     const triples = makeTriplesObject(response);
     // Make ID the first attribute
     const sortedTriples = triples.sort((a: any, b: any) => {
@@ -120,7 +114,6 @@ const EditObject = () => {
 
   // Function that runs if component loads
   useEffect(() => {
-    // fetchPhysicalObjects();
     fetchGeoClasses();
   }, []);
 
@@ -167,7 +160,7 @@ const EditObject = () => {
         setGeometry(object.geometry);
       }
       // Fetch attributes for object type
-      const attributes = await fetchAttributesForClass(object.uri);
+      const attributes = await fetchAttributesForClass(source, object.uri);
       // Fill in all attributes after a few milliseconds (so state can update first)
       setTimeout(() => {
         if(! object.attributes) return;
@@ -237,7 +230,7 @@ const EditObject = () => {
   useEffect(() => {
     if(! selectedObjectType) return;
 
-    fetchAttributesForClass(selectedObjectType.label);
+    fetchAttributesForClass(config.sources[selectedSource.id], selectedObjectType.label);
   }, [selectedObjectType])
 
   // Function that prepares data to be used for DatalistInput
@@ -375,7 +368,7 @@ const EditObject = () => {
   const showAttributes = selectedObjectType && geometry && geometry.inputs;
 
   // If physical objects did not load: Show loading text
-  if(selectedSource && ! physicalObjects || physicalObjects.length <= 0) {
+  if(selectedSource && (! physicalObjects || physicalObjects.length <= 0)) {
     return (
       <div className="EditObject">
         Bezig met laden van objecttypen...

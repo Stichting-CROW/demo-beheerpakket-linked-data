@@ -14,7 +14,15 @@ type Config = {
   sources: Sources;
 }
 
+type Attribute = {
+  entry_definition?: any;
+  entry_iri?: any;
+  entry_text?: any;
+  group_iri?: any;
+}
+
 export type {
   Config,
-  Source
+  Source,
+  Attribute
 }
