@@ -24,7 +24,7 @@ const Sidebar = () => {
           </span>
           &nbsp;
           <small>
-            demo app
+            beheer app
           </small>
 
           <small style={{alignSelf: 'flex-end'}}>
