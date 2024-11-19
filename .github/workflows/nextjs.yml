@@ -12,6 +12,11 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
+# env:
+#   # Setting an environment variable with the value of a configuration variable
+#   NEXT_PUBLIC_IMBOR_TOKEN: ${{ vars.NEXT_PUBLIC_IMBOR_TOKEN }}
+#   NEXT_PUBLIC_MAPTILER_API_KEY: ${{ vars.NEXT_PUBLIC_MAPTILER_API_KEY }}
+
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
@@ -53,6 +58,10 @@ jobs:
         with:
           node-version: "20"
           cache: ${{ steps.detect-package-manager.outputs.manager }}
+      # - name: Set Environment Variables
+      #   run: |
+      #     echo "NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}" > .env.production
+      #     echo "NEXT_PUBLIC_SITE_URL=${{ secrets.NEXT_PUBLIC_SITE_URL }}" >> .env.production
       - name: Setup Pages
         uses: actions/configure-pages@v5
         with:
@@ -74,6 +83,10 @@ jobs:
       - name: Install dependencies
         run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
       - name: Build with Next.js
+        env:
+          # Add your environment variables here
+          NEXT_PUBLIC_IMBOR_TOKEN: ${{ secrets.NEXT_PUBLIC_IMBOR_TOKEN }}
+          NEXT_PUBLIC_MAPTILER_API_KEY: ${{ secrets.NEXT_PUBLIC_MAPTILER_API_KEY }}
         run: ${{ steps.detect-package-manager.outputs.runner }} next build
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
