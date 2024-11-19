@@ -22,7 +22,8 @@ import Attribute from './Attribute';
 // Import helper functions
 import {
   getKern,
-  getGeoClasses
+  getGeoClasses,
+  getPhysicalObjects
 } from '../../api/imbor'
 import {
   getAttributesForClass,
@@ -45,7 +46,7 @@ import {
 
 import './EditObject.css'
 import SourceLabel from '../SourceLabel/SourceLabel';
-import { Source } from '@/app/types';
+import { PhysicalObject, Source } from '@/app/types';
 
 interface ImborResponse {
   head: object,
@@ -100,9 +101,30 @@ const EditObject = () => {
   }
 
   // Fetch attributes for a specific FysicalObject class
-  const fetchAttributesForClass = async (source: Source, classUri: URL) => {
+  const fetchAttributesForClass = async (activeSource: Source, classUri: URL, objectName: String) => {
+    if(! config) return;
     if(! classUri) return;
-    const response = await getAttributesForClass(source, classUri);
+
+    // Define sources we want physical objects from
+    const sources = ['imbor_kern', 'gwsw_basis_v161'];
+    
+    // Fetch physical objects for these sources
+    let all_physical_objects: any = [];
+    for(const source_id of sources) {
+      const source_objects = await fetchPhysicalObjects(config.sources[source_id]);
+      all_physical_objects = [...all_physical_objects, ...source_objects];
+    }
+
+    // Fetch classUri's for all physical objects having name: objectName
+    const relevant_objects = all_physical_objects.filter((object: PhysicalObject) => {
+      return object.label?.value === objectName;
+    });
+
+    const object_uris = relevant_objects.map((object: PhysicalObject) => {
+      return object.classURI?.value;
+    });
+    
+    const response = await getAttributesForClass(activeSource, object_uris);
     const triples = makeTriplesObject(response);
     // Make ID the first attribute
     const sortedTriples = triples.sort((a: any, b: any) => {
@@ -159,7 +181,7 @@ const EditObject = () => {
         setGeometry(object.geometry);
       }
       // Fetch attributes for object type
-      const attributes = await fetchAttributesForClass(source, object.uri);
+      const attributes = await fetchAttributesForClass(source, object.uri, object.label);
       // Fill in all attributes after a few milliseconds (so state can update first)
       setTimeout(() => {
         if(! object.attributes) return;
@@ -216,12 +238,11 @@ const EditObject = () => {
       const source = config.sources[selectedSource.id];
       if(! source) return;
   
-      const response = await getPhysicalObjectsForSource(source);
-      const uniqueTriples = getUniquePhysicalObjects(response.results?.bindings);
-      const sortedTriples = uniqueTriples.sort((a, b) => {
-        return a.label.value > b.label.value ? 1 : -1;
-      });
-      dispatch(setPhysicalObjects(sortedTriples))
+      // Fetch physical objects
+      const physical_objects = await fetchPhysicalObjects(source);
+
+      // Set in state
+      dispatch(setPhysicalObjects(physical_objects))
     })();
   }, [selectedSource]);
 
@@ -229,8 +250,17 @@ const EditObject = () => {
   useEffect(() => {
     if(! selectedObjectType) return;
 
-    fetchAttributesForClass(config.sources[selectedSource.id], selectedObjectType.label);
+    fetchAttributesForClass(config.sources[selectedSource.id], selectedObjectType.label, selectedObjectType.value);
   }, [selectedObjectType])
+
+  const fetchPhysicalObjects = async (source: Source) => {
+    const response = await getPhysicalObjectsForSource(source);
+    const uniqueTriples = getUniquePhysicalObjects(response.results?.bindings);
+    const sortedTriples = uniqueTriples.sort((a, b) => {
+      return a.label.value > b.label.value ? 1 : -1;
+    });
+    return sortedTriples;
+  }
 
   // Function that prepares data to be used for DatalistInput
   const prepareSourcesForDataList = (sources: any) => {

@@ -44,19 +44,25 @@ export const getPhysicalObjectsForSource = async (source: Source) => {
   }
 }
 
-export const getAttributesForClass = async (source: Source, classUri: string) => {
-  const imbor_attributes = await getImborAttributesForClass(classUri);
-  const gwsw_attributes = await getGwswAttributesForClass(classUri);
+export const getAttributesForClass = async (activeSource: Source, classUris: any[]) => {
+  let attributes_per_source: any = [], head: any;
+  for(const classUri of classUris) {
+    if(classUri.indexOf('gwsw') > -1) {
+      const gwsw_attributes = await getGwswAttributesForClass(classUri);
+      head = gwsw_attributes.head;
+      attributes_per_source = [...attributes_per_source, ...gwsw_attributes.results?.bindings];
+    }
+    else {
+      const imbor_attributes = await getImborAttributesForClass(classUri);
+      head = imbor_attributes.head;
+      attributes_per_source = [...attributes_per_source, ...imbor_attributes.results?.bindings];
+    }
+  }
  
-  // Merge both objects
-  let merged_bindings = mergeAttributes(
-    gwsw_attributes.results?.bindings,
-    imbor_attributes.results?.bindings
-  );
   const merged = {
-    head: imbor_attributes.head,
+    head: head,
     results: {
-      bindings: merged_bindings
+      bindings: deDuplicateAttributes(attributes_per_source)
     }
   }
 
@@ -65,34 +71,42 @@ export const getAttributesForClass = async (source: Source, classUri: string) =>
 }
 
 export const getEnumsForAttribute = async (attributeUri: string) => {
+  // Don't look up enums for GWSW for now
+  if(attributeUri.indexOf('gwsw') > -1) return;
+
+  // Get enums for attributeUri
   const imbor_enums = await getImborEnumsForAttribute(attributeUri);
 
-  // Merge both objects
-  const merged = imbor_enums;
-
   // And return
-  return merged;
+  return imbor_enums;
 }
 
-// mergeAttributes :: Merge attributes based on entry_text
-const mergeAttributes = (bindings1: Attribute[], bindings2: Attribute[]) => {
-  if (!bindings1 && !bindings2) return [];
-  if (!bindings1) return bindings2;
-  if (!bindings2) return bindings1;
+// deDuplicateAttributes :: Merge attributes based on entry_text
+const deDuplicateAttributes = (attributes: any[]) => {
+  if (!attributes) return [];
 
-  let merged: Attribute[] = bindings1;
+  // Create variable to store list of unique attributes in
+  let deDuplicated: Attribute[] = attributes;
 
-  // Add bindings2 entries, if not present in bindings1 dataset
-  bindings2.forEach((x2: Attribute) => {
-    const related_attribute: Attribute | undefined = bindings1.find((x1: Attribute) => x1.entry_text?.value === x2.entry_text?.value);
-    if(! related_attribute) merged.push(x2);
+  // Create a Map to store unique entries based on entry_text.value
+  const uniqueMap = new Map();
+  
+  // Iterate through attributes and keep only unique entries
+  attributes.forEach((attribute: Attribute) => {
+    const entryTextValue = attribute?.entry_text?.value;
+    if (entryTextValue && !uniqueMap.has(entryTextValue)) {
+      uniqueMap.set(entryTextValue, attribute);
+    }
   });
 
+  // Convert Map values back to array
+  deDuplicated = Array.from(uniqueMap.values());
+  
   (() => {
     // Check if 'identificatie' exists as an attribute field
-    const identificatie_exists = merged.find((attribute: Attribute) => attribute?.entry_text?.value === 'identificatie');
+    const identificatie_exists = deDuplicated.find((attribute: Attribute) => attribute?.entry_text?.value === 'identificatie');
     // If not: Add 'identificatie' object to beginning of the array
-    if(! identificatie_exists) merged.unshift({
+    if(! identificatie_exists) deDuplicated.unshift({
       "entry_iri": {
         "type": "uri",
         "value": "https://data.crow.nl/imbor/def/5f430c8d-7503-4a69-9e2f-f0b6e6c7f54e"
@@ -114,6 +128,6 @@ const mergeAttributes = (bindings1: Attribute[], bindings2: Attribute[]) => {
     });
   })();
 
-  return merged;
+  return deDuplicated;
 }
 

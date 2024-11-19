@@ -1,12 +1,18 @@
 type Source = {
-  name?: string
-  title?: string
-  url: string
-  fetchOptions?: any
+  name?: string;
+  title?: string;
+  url: string;
+  classRootUrl: string;
+  fetchOptions?: any;
 };
 
 type Sources = {
   [key: string]: Source
+};
+
+type PhysicalObject = {
+  classURI: any;
+  label: any;
 };
 
 type Config = {
@@ -24,5 +30,6 @@ type Attribute = {
 export type {
   Config,
   Source,
-  Attribute
+  Attribute,
+  PhysicalObject
 }

@@ -12,6 +12,7 @@ const config: Config = {
       name: "imbor_kern",
       title: "IMBOR kern",
       url: "https://hub.laces.tech/crow/imbor/2022/p/kern/sparql",
+      classRootUrl: "http://data.gwsw.nl/1.6/totaal/",
       fetchOptions: {
         method: "get",
         headers: {
@@ -24,6 +25,7 @@ const config: Config = {
       name: "gwsw_basis_v161",
       title: "GWSW Basis v1.6.1",
       url: "https://sparql.gwsw.nl/repositories/GWSW_Dataset_v161",
+      classRootUrl: "https://data.crow.nl/imbor/def/",
       fetchOptions: {
         method: "post",
         headers: {
