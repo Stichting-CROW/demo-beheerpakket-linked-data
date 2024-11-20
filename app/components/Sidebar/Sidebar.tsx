@@ -20,7 +20,7 @@ const Sidebar = () => {
         <h1>
 
           <span>
-            IMBOR
+            NEN2660-based
           </span>
           &nbsp;
           <small>
